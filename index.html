@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Demarsive Media - Admin Panel</title>
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+</head>
+<body>
+  <script>
+    CMS.init({
+      config: {
+        backend: { name: "git-gateway", branch: "main" },
+        collections: [
+          {
+            name: "blog",
+            label: "📝 Blog Posts",
+            folder: "posts",
+            create: true,
+            fields: [
+              { name: "title", label: "Title", widget: "string" },
+              { name: "date", label: "Date", widget: "datetime" },
+              { name: "category", label: "Category", widget: "select", options: ["event", "creative", "tips", "news"] },
+              { name: "image", label: "Image", widget: "image", required: false },
+              { name: "excerpt", label: "Short Summary", widget: "text" },
+              { name: "body", label: "Full Post", widget: "markdown" }
+            ]
+          },
+          {
+            name: "portfolio",
+            label: "🎨 Portfolio Items",
+            folder: "portfolio",
+            create: true,
+            fields: [
+              { name: "title", label: "Project Name", widget: "string" },
+              { name: "category", label: "Category", widget: "select", options: ["graphic", "video", "web", "logo"] },
+              { name: "image", label: "Project Image", widget: "image" },
+              { name: "description", label: "Description", widget: "text" }
+            ]
+          }
+        ]
+      }
+    });
+  </script>
+</body>
+</html>
