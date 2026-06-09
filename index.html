@@ -341,7 +341,7 @@ footer{position:relative;z-index:10;background:var(--bg3);border-top:1px solid v
         </div>
       </div>
       <div>
-        <div class="about-Services">
+        <div class="about-services">
           <div class="ask-pill"><span class="ask-pill-icon">🎨</span><span class="ask-pill-name">Brand Design</span></div>
           <div class="ask-pill"><span class="ask-pill-icon">💻</span><span class="ask-pill-name">Web Design</span></div>
           <div class="ask-pill"><span class="ask-pill-icon">🎬</span><span class="ask-pill-name">Video Editing</span></div>
@@ -463,10 +463,10 @@ footer{position:relative;z-index:10;background:var(--bg3);border-top:1px solid v
   <div class="section-wrap section-pad">
     <div class="reveal">
       <div class="sec-tag">◈ 03 — Capabilities</div>
-      <h2 class="sec-title">My Services</h2>
+      <h2 class="sec-title">My services</h2>
       <div class="sec-divider"></div>
     </div>
-    <div class="Services-grid reveal" id="sk-grid">
+    <div class="services-grid reveal" id="sk-grid">
       <div class="sk-card"><div class="sk-icon">🎨</div><div class="sk-title">Brand Design</div><div class="sk-desc">Logo design, brand identity, social media, event flyers, thumbnails, print materials.</div><div class="sk-bar-label"><span>Brand Identity</span><span>95%</span></div><div class="sk-bar"><div class="sk-fill" data-w="95"></div></div></div>
       <div class="sk-card"><div class="sk-icon">💻</div><div class="sk-title">Web Design & Dev</div><div class="sk-desc">Portfolio sites, landing pages, UI/UX in Figma, responsive frontend implementation.</div><div class="sk-bar-label"><span>Frontend</span><span>85%</span></div><div class="sk-bar"><div class="sk-fill" data-w="85"></div></div></div>
       <div class="sk-card"><div class="sk-icon">🎬</div><div class="sk-title">Video Editing</div><div class="sk-desc">Cinematic edits, motion graphics, caption animations, reels — DaVinci Resolve.</div><div class="sk-bar-label"><span>Motion</span><span>90%</span></div><div class="sk-bar"><div class="sk-fill" data-w="90"></div></div></div>
@@ -711,7 +711,7 @@ footer{position:relative;z-index:10;background:var(--bg3);border-top:1px solid v
       </div>
     </div>
     <div class="footer-col">
-      <h4>Services</h4>
+      <h4>services</h4>
       <ul>
         <li><a href="#portfolio">Graphic Design</a></li>
         <li><a href="#portfolio">Web Design</a></li>
@@ -767,7 +767,7 @@ const observer=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       e.target.classList.add('visible');
-      if(e.target.id==='sk-grid'||e.target.classList.contains('Services-grid')){
+      if(e.target.id==='sk-grid'||e.target.classList.contains('services-grid')){
         setTimeout(()=>e.target.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.w+'%'),200);
       }
     }
