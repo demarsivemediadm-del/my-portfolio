@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our work | Demarsive Media</title>
+<meta name="description" content="Video, logos, flyers, carousels, thumbnails, packaging and web design by Demarsive Media, a creative studio in Accra, Ghana.">
+<meta property="og:title" content="Our work | Demarsive Media">
+<meta property="og:image" content="assets/img/blog-demarsive.jpg">
+<link rel="icon" href="assets/img/logo-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+html{background:#050507}
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:#050507;color:#FFFFFF;font-size:17px;line-height:1.5}
+a{color:#C3B1FF}
+button{font:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid #8E6BFF;outline-offset:3px}
+.g-navwrap{position:sticky;top:12px;z-index:10;height:0}
+.g-nav{margin:0 auto;width:fit-content;max-width:calc(100% - 24px);box-sizing:border-box;background:rgba(17,17,19,.78);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 36px rgba(0,0,0,.22);border-radius:28px;display:flex;align-items:center;gap:0 26px;padding:2px 24px;font-size:14px;white-space:nowrap}
+.g-nav a{color:#D6D6DA;text-decoration:none;padding:14px 0}
+.g-nav a.g-brand{color:#F5F5F3;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:10px;padding:9px 0}
+.g-nav a.g-wa{color:#FFFFFF;font-weight:600}
+.g-head{padding:clamp(120px,11vw,160px) clamp(20px,5vw,72px) 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.g-head h1{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.05;font-size:clamp(40px,6.2vw,92px)}
+.g-head p{margin:0;color:#D8D8DE;font-size:clamp(19px,1.9vw,24px);max-width:640px}
+.g-chips{position:sticky;top:76px;z-index:5;display:flex;gap:8px;overflow-x:auto;padding:18px clamp(20px,5vw,72px);scrollbar-width:none;background:linear-gradient(#050507 70%,rgba(5,5,7,0))}
+.g-chips::-webkit-scrollbar{display:none}
+.g-chips::before,.g-chips::after{content:"";margin:auto}
+.g-chip{flex:none;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#FFFFFF;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.g-chip span{color:#A9A9B2;font-weight:400;margin-left:4px}
+.g-chip[aria-pressed=true]{background:#FFFFFF;color:#000000;border-color:#FFFFFF}
+.g-chip[aria-pressed=true] span{color:#55555B}
+.g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));grid-auto-flow:dense;gap:14px;padding:6px clamp(20px,5vw,72px) 72px;max-width:1500px;margin:0 auto}
+.g-tile{position:relative;display:block;width:100%;aspect-ratio:4/5;margin:0;padding:0;border:0;background:#141418;border-radius:18px;overflow:hidden;cursor:zoom-in;color:#FFFFFF}
+.g-tile[data-video]{cursor:pointer}
+.g-tile[hidden]{display:none}
+.g-tile.wide{grid-column:span 2;aspect-ratio:8/5}
+.g-tile img{display:block;width:100%;height:100%;object-fit:cover;}
+.g-tile.fit img{object-fit:contain}
+.g-tile.top img{object-position:top}
+.g-tile img{transition:transform .35s ease}
+.g-tile:hover img{transform:scale(1.03)}
+.g-play{position:absolute;left:14px;top:14px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+.g-cap{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;text-align:left;font-size:15px;font-weight:600;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.78))}
+.g-cta{text-align:center;padding:0 20px 96px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.g-cta h2{margin:0;font-weight:600;letter-spacing:-.02em;font-size:clamp(30px,3.6vw,48px)}
+.g-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.g-btn{display:inline-flex;align-items:center;min-height:52px;padding:0 28px;border-radius:999px;font-weight:600;text-decoration:none;background:#C3B1FF;color:#000000}
+.g-btn.alt{background:transparent;color:#FFFFFF;border:1px solid #C3B1FF}
+#g-box{position:fixed;inset:0;z-index:100;display:none;background:rgba(5,5,7,.94);align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:16px;box-sizing:border-box}
+#g-box.open{display:flex}
+#g-box img,#g-box video{max-width:min(1200px,100%);max-height:calc(100vh - 150px);border-radius:14px;background:#000;display:none}
+#g-box.is-img img,#g-box.is-vid video{display:block}
+#g-title{margin:0;color:#D8D8DE;font-size:15px;text-align:center;min-height:22px}
+.g-ctl{display:flex;gap:10px}
+.g-ctl button{min-height:48px;min-width:48px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#FFFFFF;font-size:16px;font-weight:600;cursor:pointer}
+.g-ctl button[data-close]{background:#FFFFFF;color:#000000;border-color:#FFFFFF}
+#g-box.is-vid .g-step{display:none}
+@media (max-width:820px){.g-nav{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(17,17,19,.95);gap:0 16px;padding:2px 18px}.g-nav .g-opt{display:none}.g-grid{grid-template-columns:repeat(2,1fr);gap:10px}.g-tile{border-radius:14px}.g-cap{font-size:13px;padding:26px 10px 10px}}
+@media (prefers-reduced-motion:reduce){.g-tile img{transition:none}}
+</style>
+</head>
+<body>
+<div class="g-navwrap"><header class="g-nav">
+<a class="g-brand" href="index.html"><img src="assets/img/logo-white.png" alt="" style="height:30px;width:auto;display:block">Demarsive Media</a>
+<a href="index.html">Home</a>
+<a class="g-opt" href="index.html#packages">Packages</a>
+<a class="g-opt" href="index.html#contact">Contact</a>
+<a class="g-wa" href="https://wa.me/233248037049">WhatsApp</a>
+</header></div>
+<main>
+<div class="g-head"><h1>Our work</h1><p>Video, branding, design and web. Tap anything to see it full size.</p></div>
+<div class="g-chips" role="group" aria-label="Filter the work"><button type="button" class="g-chip" data-filter="all" aria-pressed="true">All <span>105</span></button><button type="button" class="g-chip" data-filter="video" aria-pressed="false">Video <span>6</span></button><button type="button" class="g-chip" data-filter="logos" aria-pressed="false">Logos <span>11</span></button><button type="button" class="g-chip" data-filter="flyers" aria-pressed="false">Flyers <span>24</span></button><button type="button" class="g-chip" data-filter="carousels" aria-pressed="false">Carousels <span>44</span></button><button type="button" class="g-chip" data-filter="thumbnails" aria-pressed="false">Thumbnails <span>11</span></button><button type="button" class="g-chip" data-filter="packaging" aria-pressed="false">Packaging and print <span>7</span></button><button type="button" class="g-chip" data-filter="web" aria-pressed="false">Web <span>2</span></button></div>
+<div class="g-grid" id="g-grid">
+<button type="button" class="g-tile wide" data-cat="video" data-video="assets/video/market-dome-full.mp4" aria-label="Play Dome Market, street film with sound"><img src="assets/gallery/vid-market-dome.jpg" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">Dome Market, street film</span></button>
+<button type="button" class="g-tile top" data-cat="video" data-video="assets/video/exness-nov1-full.mp4" aria-label="Play Exness promo reel with sound"><img src="assets/gallery/vid-exness-nov1.jpg" width="540" height="960" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">Exness promo reel</span></button>
+<button type="button" class="g-tile wide" data-cat="video" data-video="assets/video/saturday-reel-full.mp4" aria-label="Play Vessels of Honour retreat reel with sound"><img src="assets/gallery/vid-saturday-reel.jpg" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">Vessels of Honour retreat reel</span></button>
+<button type="button" class="g-tile wide" data-cat="video" data-video="assets/video/lets-flex-full.mp4" aria-label="Play Trader, short film with sound"><img src="assets/gallery/vid-lets-flex.jpg" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">Trader, short film</span></button>
+<button type="button" class="g-tile top" data-cat="video" data-video="assets/video/birthday-87th-full.mp4" aria-label="Play 87th birthday highlights with sound"><img src="assets/gallery/vid-birthday-87th.jpg" width="540" height="960" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">87th birthday highlights</span></button>
+<button type="button" class="g-tile top" data-cat="video" data-video="assets/video/timeline-1-full.mp4" aria-label="Play Social reel with sound"><img src="assets/gallery/vid-timeline-1.jpg" width="540" height="960" alt="" loading="lazy" decoding="async"><span class="g-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></span><span class="g-cap">Social reel</span></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-rossiebite.jpg" aria-label="Open RossieBite logo and brand identity"><img src="assets/gallery/logo-rossiebite-t.jpg" width="520" height="316" alt="RossieBite logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-fiora.jpg" aria-label="Open Fiora logo and brand identity"><img src="assets/gallery/logo-fiora-t.jpg" width="520" height="316" alt="Fiora logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-galli2.jpg" aria-label="Open Galli logo and brand identity"><img src="assets/gallery/logo-galli2-t.jpg" width="520" height="316" alt="Galli logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-endless.jpg" aria-label="Open Endless Screens logo and brand identity"><img src="assets/gallery/logo-endless-t.jpg" width="520" height="316" alt="Endless Screens logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-jaysports.jpg" aria-label="Open Jay Sports logo and brand identity"><img src="assets/gallery/logo-jaysports-t.jpg" width="520" height="316" alt="Jay Sports logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-lunchyz.jpg" aria-label="Open Lunchyz logo and brand identity"><img src="assets/gallery/logo-lunchyz-t.jpg" width="520" height="316" alt="Lunchyz logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-magnificent.jpg" aria-label="Open Magnificent logo and brand identity"><img src="assets/gallery/logo-magnificent-t.jpg" width="520" height="316" alt="Magnificent logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-valttied.jpg" aria-label="Open Valttied logo and brand identity"><img src="assets/gallery/logo-valttied-t.jpg" width="520" height="316" alt="Valttied logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-zaylura.jpg" aria-label="Open Zaylura logo and brand identity"><img src="assets/gallery/logo-zaylura-t.jpg" width="520" height="316" alt="Zaylura logo and brand identity" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-grid.jpg" aria-label="Open A grid of logos designed by Demarsive Media"><img src="assets/gallery/logo-grid-t.jpg" width="520" height="316" alt="A grid of logos designed by Demarsive Media" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="logos" data-full="assets/gallery/logo-k.jpg" aria-label="Open Leaf letter K logo"><img src="assets/gallery/logo-k-t.jpg" width="520" height="366" alt="Leaf letter K logo" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-01.jpg" aria-label="Open Galli camping trip flyer"><img src="assets/gallery/flyer-01-t.jpg" width="520" height="650" alt="Galli camping trip flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-02.jpg" aria-label="Open Galli trip packing list flyer"><img src="assets/gallery/flyer-02-t.jpg" width="520" height="650" alt="Galli trip packing list flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-03.jpg" aria-label="Open Two-day forex bootcamp flyer"><img src="assets/gallery/flyer-03-t.jpg" width="520" height="650" alt="Two-day forex bootcamp flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-04.jpg" aria-label="Open Forex bootcamp flyer with host"><img src="assets/gallery/flyer-04-t.jpg" width="520" height="650" alt="Forex bootcamp flyer with host" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-05.jpg" aria-label="Open Forex bootcamp join now flyer"><img src="assets/gallery/flyer-05-t.jpg" width="520" height="650" alt="Forex bootcamp join now flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-06.jpg" aria-label="Open Forex bootcamp second edition flyer"><img src="assets/gallery/flyer-06-t.jpg" width="520" height="650" alt="Forex bootcamp second edition flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-07.jpg" aria-label="Open Live forex trading schedule flyer"><img src="assets/gallery/flyer-07-t.jpg" width="520" height="650" alt="Live forex trading schedule flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-08.jpg" aria-label="Open Church programme flyer, Desperate 2026"><img src="assets/gallery/flyer-08-t.jpg" width="520" height="650" alt="Church programme flyer, Desperate 2026" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-09.jpg" aria-label="Open Friends and Family Sunday church flyer"><img src="assets/gallery/flyer-09-t.jpg" width="520" height="643" alt="Friends and Family Sunday church flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-10.jpg" aria-label="Open Stomach City Foods price flyer"><img src="assets/gallery/flyer-10-t.jpg" width="520" height="650" alt="Stomach City Foods price flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-11.jpg" aria-label="Open Stomach City Foods weekly menu flyer"><img src="assets/gallery/flyer-11-t.jpg" width="520" height="650" alt="Stomach City Foods weekly menu flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-12.jpg" aria-label="Open Restaurant flyer, Want a taste like home"><img src="assets/gallery/flyer-12-t.jpg" width="520" height="650" alt="Restaurant flyer, Want a taste like home" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-13.jpg" aria-label="Open RossieBite pastries flyer"><img src="assets/gallery/flyer-13-t.jpg" width="520" height="650" alt="RossieBite pastries flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-14.jpg" aria-label="Open Lali&#x27;s Royale Glam nail and beauty flyer"><img src="assets/gallery/flyer-14-t.jpg" width="520" height="650" alt="Lali&#x27;s Royale Glam nail and beauty flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-15.jpg" aria-label="Open Beadan Spa flyer"><img src="assets/gallery/flyer-15-t.jpg" width="520" height="738" alt="Beadan Spa flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-16.jpg" aria-label="Open Eid ul Fitr forex promo flyer"><img src="assets/gallery/flyer-16-t.jpg" width="520" height="650" alt="Eid ul Fitr forex promo flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-17.jpg" aria-label="Open Eid ul Fitr camera promo flyer"><img src="assets/gallery/flyer-17-t.jpg" width="520" height="650" alt="Eid ul Fitr camera promo flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-18.jpg" aria-label="Open TGIF event flyer"><img src="assets/gallery/flyer-18-t.jpg" width="520" height="650" alt="TGIF event flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-carousel-37.jpg" aria-label="Open MarketGod Tours Ghana flyer"><img src="assets/gallery/flyer-carousel-37-t.jpg" width="520" height="650" alt="MarketGod Tours Ghana flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-carousel-38.jpg" aria-label="Open MarketGod Tours Ghana map flyer"><img src="assets/gallery/flyer-carousel-38-t.jpg" width="520" height="650" alt="MarketGod Tours Ghana map flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-carousel-39.jpg" aria-label="Open Five-day forex bootcamp venue flyer"><img src="assets/gallery/flyer-carousel-39-t.jpg" width="520" height="650" alt="Five-day forex bootcamp venue flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile fit" data-cat="flyers" data-full="assets/gallery/flyer-sales-02.jpg" aria-label="Open Headphones sale flyer"><img src="assets/gallery/flyer-sales-02-t.jpg" width="520" height="520" alt="Headphones sale flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="flyers" data-full="assets/gallery/flyer-sales-04.jpg" aria-label="Open Running shoe sale flyer"><img src="assets/gallery/flyer-sales-04-t.jpg" width="520" height="650" alt="Running shoe sale flyer" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="flyers" data-full="assets/gallery/flyer-sales-01.jpg" aria-label="Open Banana smoothie sale banner"><img src="assets/gallery/flyer-sales-01-t.jpg" width="520" height="292" alt="Banana smoothie sale banner" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-1.jpg" aria-label="Open farmVest carousel, slide 1"><img src="assets/gallery/car-farmvest-1-t.jpg" width="520" height="650" alt="farmVest carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-2.jpg" aria-label="Open farmVest carousel, slide 2"><img src="assets/gallery/car-farmvest-2-t.jpg" width="520" height="650" alt="farmVest carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-3.jpg" aria-label="Open farmVest carousel, slide 3"><img src="assets/gallery/car-farmvest-3-t.jpg" width="520" height="650" alt="farmVest carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-4.jpg" aria-label="Open farmVest carousel, slide 4"><img src="assets/gallery/car-farmvest-4-t.jpg" width="520" height="650" alt="farmVest carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-5.jpg" aria-label="Open farmVest carousel, slide 5"><img src="assets/gallery/car-farmvest-5-t.jpg" width="520" height="650" alt="farmVest carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-farmvest-6.jpg" aria-label="Open farmVest carousel, slide 6"><img src="assets/gallery/car-farmvest-6-t.jpg" width="520" height="650" alt="farmVest carousel, slide 6" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-1.jpg" aria-label="Open Demarsive Media intro carousel, slide 1"><img src="assets/gallery/car-demarsive-1-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-2.jpg" aria-label="Open Demarsive Media intro carousel, slide 2"><img src="assets/gallery/car-demarsive-2-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-3.jpg" aria-label="Open Demarsive Media intro carousel, slide 3"><img src="assets/gallery/car-demarsive-3-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-4.jpg" aria-label="Open Demarsive Media intro carousel, slide 4"><img src="assets/gallery/car-demarsive-4-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-5.jpg" aria-label="Open Demarsive Media intro carousel, slide 5"><img src="assets/gallery/car-demarsive-5-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-demarsive-6.jpg" aria-label="Open Demarsive Media intro carousel, slide 6"><img src="assets/gallery/car-demarsive-6-t.jpg" width="520" height="650" alt="Demarsive Media intro carousel, slide 6" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-1.jpg" aria-label="Open Pastors you can follow carousel, slide 1"><img src="assets/gallery/car-pastors-1-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-2.jpg" aria-label="Open Pastors you can follow carousel, slide 2"><img src="assets/gallery/car-pastors-2-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-3.jpg" aria-label="Open Pastors you can follow carousel, slide 3"><img src="assets/gallery/car-pastors-3-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-4.jpg" aria-label="Open Pastors you can follow carousel, slide 4"><img src="assets/gallery/car-pastors-4-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-5.jpg" aria-label="Open Pastors you can follow carousel, slide 5"><img src="assets/gallery/car-pastors-5-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-6.jpg" aria-label="Open Pastors you can follow carousel, slide 6"><img src="assets/gallery/car-pastors-6-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 6" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-pastors-7.jpg" aria-label="Open Pastors you can follow carousel, slide 7"><img src="assets/gallery/car-pastors-7-t.jpg" width="520" height="650" alt="Pastors you can follow carousel, slide 7" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-rossiebite-1.jpg" aria-label="Open RossieBite spring rolls carousel, slide 1"><img src="assets/gallery/car-rossiebite-1-t.jpg" width="520" height="650" alt="RossieBite spring rolls carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-rossiebite-2.jpg" aria-label="Open RossieBite spring rolls carousel, slide 2"><img src="assets/gallery/car-rossiebite-2-t.jpg" width="520" height="650" alt="RossieBite spring rolls carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-rossiebite-3.jpg" aria-label="Open RossieBite spring rolls carousel, slide 3"><img src="assets/gallery/car-rossiebite-3-t.jpg" width="520" height="650" alt="RossieBite spring rolls carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-rossiebite-4.jpg" aria-label="Open RossieBite spring rolls carousel, slide 4"><img src="assets/gallery/car-rossiebite-4-t.jpg" width="520" height="650" alt="RossieBite spring rolls carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-flex-1.jpg" aria-label="Open MarketGod trader carousel, slide 1"><img src="assets/gallery/car-flex-1-t.jpg" width="520" height="650" alt="MarketGod trader carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-flex-2.jpg" aria-label="Open MarketGod trader carousel, slide 2"><img src="assets/gallery/car-flex-2-t.jpg" width="520" height="650" alt="MarketGod trader carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-flex-3.jpg" aria-label="Open MarketGod trader carousel, slide 3"><img src="assets/gallery/car-flex-3-t.jpg" width="520" height="650" alt="MarketGod trader carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-flex-4.jpg" aria-label="Open MarketGod trader carousel, slide 4"><img src="assets/gallery/car-flex-4-t.jpg" width="520" height="650" alt="MarketGod trader carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-1.jpg" aria-label="Open Trading story carousel, slide 1"><img src="assets/gallery/car-story-1-t.jpg" width="520" height="650" alt="Trading story carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-2.jpg" aria-label="Open Trading story carousel, slide 2"><img src="assets/gallery/car-story-2-t.jpg" width="520" height="650" alt="Trading story carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-3.jpg" aria-label="Open Trading story carousel, slide 3"><img src="assets/gallery/car-story-3-t.jpg" width="520" height="650" alt="Trading story carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-4.jpg" aria-label="Open Trading story carousel, slide 4"><img src="assets/gallery/car-story-4-t.jpg" width="520" height="650" alt="Trading story carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-5.jpg" aria-label="Open Trading story carousel, slide 5"><img src="assets/gallery/car-story-5-t.jpg" width="520" height="650" alt="Trading story carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-story-6.jpg" aria-label="Open Trading story carousel, slide 6"><img src="assets/gallery/car-story-6-t.jpg" width="520" height="650" alt="Trading story carousel, slide 6" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-promo-1.jpg" aria-label="Open MarketGod year-end promo carousel, slide 1"><img src="assets/gallery/car-promo-1-t.jpg" width="520" height="650" alt="MarketGod year-end promo carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-promo-2.jpg" aria-label="Open MarketGod year-end promo carousel, slide 2"><img src="assets/gallery/car-promo-2-t.jpg" width="520" height="650" alt="MarketGod year-end promo carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-promo-3.jpg" aria-label="Open MarketGod year-end promo carousel, slide 3"><img src="assets/gallery/car-promo-3-t.jpg" width="520" height="650" alt="MarketGod year-end promo carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-promo-4.jpg" aria-label="Open MarketGod year-end promo carousel, slide 4"><img src="assets/gallery/car-promo-4-t.jpg" width="520" height="650" alt="MarketGod year-end promo carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-promo-5.jpg" aria-label="Open MarketGod year-end promo carousel, slide 5"><img src="assets/gallery/car-promo-5-t.jpg" width="520" height="650" alt="MarketGod year-end promo carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-1.jpg" aria-label="Open Exness account guide carousel, slide 1"><img src="assets/gallery/car-exness-1-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 1" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-2.jpg" aria-label="Open Exness account guide carousel, slide 2"><img src="assets/gallery/car-exness-2-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 2" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-3.jpg" aria-label="Open Exness account guide carousel, slide 3"><img src="assets/gallery/car-exness-3-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 3" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-4.jpg" aria-label="Open Exness account guide carousel, slide 4"><img src="assets/gallery/car-exness-4-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 4" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-5.jpg" aria-label="Open Exness account guide carousel, slide 5"><img src="assets/gallery/car-exness-5-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="carousels" data-full="assets/gallery/car-exness-6.jpg" aria-label="Open Exness account guide carousel, slide 6"><img src="assets/gallery/car-exness-6-t.jpg" width="520" height="650" alt="Exness account guide carousel, slide 6" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-01.jpg" aria-label="Open YouTube thumbnail, He created an Exness account"><img src="assets/gallery/thumb-01-t.jpg" width="520" height="293" alt="YouTube thumbnail, He created an Exness account" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-02.jpg" aria-label="Open YouTube thumbnail, Create Exness account"><img src="assets/gallery/thumb-02-t.jpg" width="520" height="293" alt="YouTube thumbnail, Create Exness account" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-03.jpg" aria-label="Open YouTube thumbnail, I taught my editor Exness"><img src="assets/gallery/thumb-03-t.jpg" width="520" height="293" alt="YouTube thumbnail, I taught my editor Exness" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-04.jpg" aria-label="Open YouTube thumbnail, Risk free trade"><img src="assets/gallery/thumb-04-t.jpg" width="520" height="293" alt="YouTube thumbnail, Risk free trade" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-05.jpg" aria-label="Open YouTube thumbnail, 90% gold strategy"><img src="assets/gallery/thumb-05-t.jpg" width="520" height="293" alt="YouTube thumbnail, 90% gold strategy" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-06.jpg" aria-label="Open YouTube thumbnail, Trade gold alongside a 9 to 5"><img src="assets/gallery/thumb-06-t.jpg" width="520" height="293" alt="YouTube thumbnail, Trade gold alongside a 9 to 5" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-07.jpg" aria-label="Open YouTube thumbnail, Scam funding pips"><img src="assets/gallery/thumb-07-t.jpg" width="520" height="293" alt="YouTube thumbnail, Scam funding pips" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-08.jpg" aria-label="Open YouTube thumbnail, Forex lies"><img src="assets/gallery/thumb-08-t.jpg" width="520" height="293" alt="YouTube thumbnail, Forex lies" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-09.jpg" aria-label="Open YouTube thumbnail, trading profit"><img src="assets/gallery/thumb-09-t.jpg" width="520" height="293" alt="YouTube thumbnail, trading profit" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-10.jpg" aria-label="Open YouTube thumbnail, TradingView in 14 minutes"><img src="assets/gallery/thumb-10-t.jpg" width="520" height="293" alt="YouTube thumbnail, TradingView in 14 minutes" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="thumbnails" data-full="assets/gallery/thumb-live.jpg" aria-label="Open Live forex trading stream banner"><img src="assets/gallery/thumb-live-t.jpg" width="520" height="293" alt="Live forex trading stream banner" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="packaging" data-full="assets/gallery/pack-01.jpg" aria-label="Open Cookies and chin chin pouch packaging"><img src="assets/gallery/pack-01-t.jpg" width="520" height="325" alt="Cookies and chin chin pouch packaging" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="packaging" data-full="assets/gallery/pack-02.jpg" aria-label="Open RossieBite branded carrier bag"><img src="assets/gallery/pack-02-t.jpg" width="520" height="347" alt="RossieBite branded carrier bag" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="packaging" data-full="assets/gallery/pack-03.jpg" aria-label="Open RossieBite spring rolls pack label"><img src="assets/gallery/pack-03-t.jpg" width="520" height="636" alt="RossieBite spring rolls pack label" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile" data-cat="packaging" data-full="assets/gallery/pack-04.jpg" aria-label="Open RossieBite cake box label"><img src="assets/gallery/pack-04-t.jpg" width="520" height="619" alt="RossieBite cake box label" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide fit" data-cat="packaging" data-full="assets/gallery/pack-05.jpg" aria-label="Open Stew mix product label"><img src="assets/gallery/pack-05-t.jpg" width="520" height="208" alt="Stew mix product label" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="packaging" data-full="assets/gallery/pack-06.jpg" aria-label="Open RossieBite business card, front"><img src="assets/gallery/pack-06-t.jpg" width="520" height="327" alt="RossieBite business card, front" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile wide" data-cat="packaging" data-full="assets/gallery/pack-07.jpg" aria-label="Open RossieBite business card, back"><img src="assets/gallery/pack-07-t.jpg" width="520" height="327" alt="RossieBite business card, back" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile top" data-cat="web" data-full="assets/gallery/web-shop.jpg" aria-label="Open Online shop page design"><img src="assets/gallery/web-shop-t.jpg" width="520" height="1011" alt="Online shop page design" loading="lazy" decoding="async"></button>
+<button type="button" class="g-tile top" data-cat="web" data-full="assets/gallery/web-store.jpg" aria-label="Open Electronics store home page design"><img src="assets/gallery/web-store-t.jpg" width="520" height="1011" alt="Electronics store home page design" loading="lazy" decoding="async"></button>
+</div>
+<div class="g-cta"><h2>Want work like this for your brand?</h2><div class="g-btns"><a class="g-btn" href="https://wa.me/233248037049">WhatsApp us</a><a class="g-btn alt" href="index.html#packages">See packages</a></div></div>
+</main>
+<div id="g-box" role="dialog" aria-modal="true" aria-label="Viewer">
+<img id="g-img" alt=""><video id="g-vid" controls playsinline></video>
+<p id="g-title"></p>
+<div class="g-ctl"><button type="button" class="g-step" data-step="-1" aria-label="Previous">&lsaquo;</button><button type="button" data-close>Close</button><button type="button" class="g-step" data-step="1" aria-label="Next">&rsaquo;</button></div>
+</div>
+<script>
+(function () {
+  var grid = document.getElementById('g-grid'), tiles = [].slice.call(grid.querySelectorAll('.g-tile'));
+  var chips = [].slice.call(document.querySelectorAll('.g-chip'));
+  var box = document.getElementById('g-box'), img = document.getElementById('g-img'), vid = document.getElementById('g-vid'), title = document.getElementById('g-title');
+  var current = -1, lastFocus = null;
+  function setFilter(f) {
+    if (!chips.some(function (c) { return c.dataset.filter === f; })) f = 'all';
+    chips.forEach(function (c) { var on = c.dataset.filter === f; c.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on && c.scrollIntoView) c.scrollIntoView({ block: 'nearest', inline: 'center' }); });
+    tiles.forEach(function (t) { t.hidden = !(f === 'all' || t.dataset.cat === f); });
+  }
+  chips.forEach(function (c) { c.addEventListener('click', function () { setFilter(c.dataset.filter); history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : '#' + c.dataset.filter); }); });
+  function fromHash() { setFilter((location.hash || '#all').slice(1)); }
+  window.addEventListener('hashchange', fromHash); fromHash();
+  function pics() { return tiles.filter(function (t) { return !t.hidden && t.dataset.full; }); }
+  function show(t) {
+    if (t.dataset.video) { box.className = 'open is-vid'; title.textContent = t.querySelector('.g-cap').textContent; vid.src = t.dataset.video; vid.play().catch(function () {}); }
+    else { box.className = 'open is-img'; var im = t.querySelector('img'); img.src = im.src; img.alt = im.alt; title.textContent = im.alt; var full = new Image(); full.onload = function () { if (pics()[current] === t) img.src = full.src; }; full.src = t.dataset.full; current = pics().indexOf(t); }
+  }
+  function close() { box.className = ''; vid.pause(); vid.removeAttribute('src'); vid.load(); document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); }
+  function step(n) { var p = pics(); if (!p.length || box.className.indexOf('is-img') < 0) return; current = (current + n + p.length) % p.length; show(p[current]); }
+  grid.addEventListener('click', function (e) { var t = e.target.closest('.g-tile'); if (!t) return; lastFocus = t; document.body.style.overflow = 'hidden'; show(t); box.querySelector('[data-close]').focus(); });
+  box.addEventListener('click', function (e) {
+    var s = e.target.closest('[data-step]'); if (s) return step(Number(s.dataset.step));
+    if (e.target === box || e.target.closest('[data-close]')) close();
+  });
+  document.addEventListener('keydown', function (e) { if (!box.className) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
+  var x0 = null;
+  box.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); });
+})();
+</script>
+</body>
+</html>
