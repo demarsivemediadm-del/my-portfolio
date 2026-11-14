@@ -99,6 +99,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <button type="button" role="tab" data-tab="posts" aria-selected="false">Blog</button>
       <button type="button" role="tab" data-tab="packages" aria-selected="false">Packages</button>
       <button type="button" role="tab" data-tab="reviews" aria-selected="false">Reviews</button>
+      <button type="button" role="tab" data-tab="home" aria-selected="false">Home page</button>
     </div>
 
     <section id="t-gallery">
@@ -157,6 +158,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <section id="t-packages" hidden>
       <p class="muted" style="margin:0 0 12px">Visitors in Ghana see the Ghana price. Everyone else sees the international price. Type prices exactly as they should appear, for example GH₵3,000 or $650.</p>
       <div id="k-list"></div>
+    </section>
+
+    <section id="t-home" hidden>
+      <p class="muted" style="margin:0 0 12px">Swap any picture or video on the home page. Use the same shape as the one you are replacing (tall for tall, wide for wide) so it fits. Videos must be MP4 and under 50 MB; shorter and smaller plays smoother on phones.</p>
+      <div id="h-list"></div>
     </section>
 
     <section id="t-reviews" hidden>
@@ -405,8 +411,42 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   function drawReviews() { var list = $('r-list'); list.innerHTML = ''; revs.forEach(function (v, i) { list.appendChild(reviewForm(v, i)); }); }
   $('r-new').addEventListener('click', function () { var f = reviewForm(null); $('r-list').insertBefore(f, $('r-list').firstChild); f.querySelector('input').focus(); });
 
+  // ---------- home page pictures and videos ----------
+  function loadHome() {
+    return Promise.all([fetch('assets/home-slots.json').then(function (r) { return r.json(); }), sb.from('home_media').select('*')]).then(function (res) {
+      var slots = res[0], over = {}; check(res[1]).forEach(function (o) { over[o.original] = o.url; });
+      var list = $('h-list'); list.innerHTML = '';
+      var card = null, last = null;
+      slots.forEach(function (s) {
+        if (s.section !== last) { last = s.section; card = el('div', { class: 'card' }, [el('h2', { text: s.section })]); list.appendChild(card); }
+        var now = over[s.src] || s.src, isVid = s.kind === 'video';
+        var prev = isVid ? el('video', { class: 'th', src: now, muted: true, playsInline: true, preload: 'metadata' }) : el('img', { class: 'th', src: now, alt: '', loading: 'lazy' });
+        var file = el('input', { type: 'file', accept: isVid ? 'video/mp4' : 'image/*', 'aria-label': 'Choose a replacement' });
+        var go = el('button', { type: 'button', class: 'primary', text: 'Replace' });
+        var btns = [go];
+        go.addEventListener('click', function () {
+          var f = file.files[0]; if (!f) return toast('Choose a file first.', true);
+          if (isVid && f.size > 50 * 1024 * 1024) return toast('That video is over 50 MB. Export a smaller one.', true);
+          go.disabled = true; go.textContent = 'Uploading…';
+          (isVid ? put('home/' + stamp(f.name) + '.mp4', f, 'video/mp4') : resize(f, 1600).then(function (c) { return put('home/' + stamp(f.name) + '.jpg', c.blob, 'image/jpeg'); }))
+            .then(function (url) { return sb.from('home_media').upsert({ original: s.src, url: url, updated_at: new Date().toISOString() }).then(check).then(function () { return over[s.src] ? removeFiles([over[s.src]]) : null; }); })
+            .then(function () { toast('Replaced. It is on the site now.'); return loadHome(); }).catch(function (e) { go.disabled = false; go.textContent = 'Replace'; fail(e); });
+        });
+        if (over[s.src]) {
+          var back = el('button', { type: 'button', text: 'Put back the original' });
+          back.addEventListener('click', function () { back.disabled = true; sb.from('home_media').delete().eq('original', s.src).then(function (r) { check(r); return removeFiles([over[s.src]]); }).then(function () { toast('Original is back.'); return loadHome(); }).catch(fail); });
+          btns.push(back);
+        }
+        card.appendChild(el('div', { class: 'item' }, [prev, el('div', { class: 'body' }, [
+          el('p', { class: 'muted', text: (isVid ? 'Video' : 'Picture') + (s.label ? ' · ' + s.label : '') + (over[s.src] ? ' · replaced' : '') }),
+          file, el('div', { class: 'btns' }, btns)
+        ])]));
+      });
+    });
+  }
+
   // ---------- tabs ----------
-  var loaders = { gallery: loadGallery, posts: loadPosts, packages: loadPackages, reviews: loadReviews };
+  var loaders = { gallery: loadGallery, posts: loadPosts, packages: loadPackages, reviews: loadReviews, home: loadHome };
   [].forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
     b.addEventListener('click', function () {
       [].forEach.call(document.querySelectorAll('[data-tab]'), function (o) { o.setAttribute('aria-selected', o === b ? 'true' : 'false'); $('t-' + o.dataset.tab).hidden = o !== b; });

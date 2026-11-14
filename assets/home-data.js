@@ -25,6 +25,19 @@
     });
   }).catch(function () {}).then(showPrices);
 
+  // Pictures and videos the owner has replaced from the admin page
+  DM.table('home_media', 'select=original,url').then(function (rows) {
+    rows.forEach(function (r) {
+      [].forEach.call(document.querySelectorAll('img, video'), function (n) {
+        if (n.getAttribute('src') !== r.original) return;
+        if (n.tagName === 'VIDEO') n.removeAttribute('poster');
+        n.src = r.url;
+      });
+      var full = r.original.replace('-preview.mp4', '-full.mp4');
+      [].forEach.call(document.querySelectorAll('[data-video]'), function (n) { if (n.dataset.video === full) n.dataset.video = r.url; });
+    });
+  }).catch(function () {});
+
   // Reviews
   var revSec = document.getElementById('reviews');
   if (revSec) DM.table('reviews', 'select=name,role,quote&published=is.true&order=sort,id').then(function (rows) {
