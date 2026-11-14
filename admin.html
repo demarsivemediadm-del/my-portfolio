@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin | Demarsive Media</title>
+<link rel="icon" href="assets/img/logo-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+html{background:#0B0B0E}
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:#0B0B0E;color:#F5F5F3;font-size:16px;line-height:1.5}
+*{box-sizing:border-box}
+a{color:#C3B1FF}
+h1{font-size:28px;letter-spacing:-.02em;margin:0}
+h2{font-size:22px;letter-spacing:-.01em;margin:0 0 4px}
+h3{font-size:17px;margin:0}
+p{margin:0}
+.muted{color:#A9A9B2;font-size:14px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 96px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 0 16px}
+.top img{height:34px}
+.top .sp{flex:1}
+.card{background:#16161B;border:1px solid #2A2A32;border-radius:18px;padding:18px;margin:0 0 14px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row > *{flex:1 1 180px;min-width:0}
+.row > .fix{flex:0 0 auto}
+label{display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:500;color:#D8D8DE}
+label.check{flex-direction:row;align-items:center;gap:8px;min-height:44px}
+input,select,textarea{font:inherit;color:#F5F5F3;background:#0B0B0E;border:1px solid #3A3A44;border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+input[type=checkbox]{width:22px;height:22px;min-height:0;padding:0;accent-color:#8E6BFF}
+input[type=file]{padding:8px}
+textarea{min-height:120px;resize:vertical}
+textarea.tall{min-height:340px}
+button{font:inherit;font-weight:600;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid #3A3A44;background:transparent;color:#F5F5F3;cursor:pointer}
+button.primary{background:#C3B1FF;color:#000;border-color:#C3B1FF}
+button.danger{border-color:#7A2B2B;color:#FFB4AB}
+button.danger.sure{background:#B3261E;color:#fff;border-color:#B3261E}
+button.small{min-height:44px;min-width:44px;padding:0 12px}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8E6BFF;outline-offset:2px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}
+.tabs button{flex:none;white-space:nowrap}
+.tabs button[aria-selected=true]{background:#fff;color:#000;border-color:#fff}
+.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #2A2A32}
+.item:first-child{border-top:0}
+.item img.th{width:76px;height:76px;object-fit:cover;border-radius:10px;background:#000;flex:none}
+.item .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.item .btns{display:flex;gap:6px;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100% - 24px);background:#fff;color:#000;font-weight:600;padding:12px 18px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);display:none;z-index:50}
+#toast.bad{background:#B3261E;color:#fff}
+#toast.show{display:block}
+[hidden]{display:none!important}
+.hint{background:#101014;border:1px dashed #3A3A44;border-radius:12px;padding:12px;font-size:14px;color:#C9C9D2}
+.hint code{background:#22222A;padding:1px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="assets/img/logo-white.png" alt="">
+    <h1>Site admin</h1>
+    <span class="sp"></span>
+    <a href="index.html" target="_blank" rel="noopener">View site</a>
+    <button type="button" id="logout" hidden>Log out</button>
+  </div>
+
+  <div id="v-loading" class="card">Loading…</div>
+
+  <form id="v-login" class="card stack" hidden>
+    <h2>Log in</h2>
+    <p class="muted">Only the site owner's account can make changes.</p>
+    <label>Email <input type="email" id="email" autocomplete="username" required></label>
+    <label>Password <input type="password" id="password" autocomplete="current-password" minlength="8" required></label>
+    <div class="row">
+      <button type="submit" class="primary fix">Log in</button>
+      <button type="button" id="signup" class="fix">First time? Create my account</button>
+      <button type="button" id="forgot" class="fix">Forgot password</button>
+    </div>
+    <p id="login-msg" class="muted" role="status"></p>
+  </form>
+
+  <form id="v-newpass" class="card stack" hidden>
+    <h2>Choose a new password</h2>
+    <label>New password (8 characters or more) <input type="password" id="newpass" autocomplete="new-password" minlength="8" required></label>
+    <div class="row"><button type="submit" class="primary fix">Save password</button></div>
+  </form>
+
+  <div id="v-denied" class="card stack" hidden>
+    <h2>This account can't edit the site</h2>
+    <p class="muted">You are logged in, but this email is not on the admin list. Log out and use the owner's email.</p>
+  </div>
+
+  <div id="v-app" hidden>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="gallery" aria-selected="true">Gallery</button>
+      <button type="button" role="tab" data-tab="posts" aria-selected="false">Blog</button>
+      <button type="button" role="tab" data-tab="packages" aria-selected="false">Packages</button>
+      <button type="button" role="tab" data-tab="reviews" aria-selected="false">Reviews</button>
+    </div>
+
+    <section id="t-gallery">
+      <form id="g-add" class="card stack">
+        <h2>Add work</h2>
+        <div class="row">
+          <label>Type <select id="g-cat"></select></label>
+          <label id="g-files-l">Pictures (you can pick several) <input type="file" id="g-files" accept="image/*" multiple></label>
+        </div>
+        <div class="row" id="g-video-fields" hidden>
+          <label>Video title <input type="text" id="g-vtitle" maxlength="80"></label>
+          <label>Video file (MP4, under 50 MB) <input type="file" id="g-vfile" accept="video/mp4"></label>
+        </div>
+        <p class="muted" id="g-add-note">Pictures are resized automatically. New work appears at the end of its type; use the arrows to move it.</p>
+        <div class="row"><button type="submit" class="primary fix">Upload</button></div>
+      </form>
+      <div class="card">
+        <div class="row" style="margin-bottom:6px">
+          <label>Show <select id="g-filter"></select></label>
+          <p class="muted fix" id="g-count"></p>
+        </div>
+        <div id="g-list"></div>
+      </div>
+    </section>
+
+    <section id="t-posts" hidden>
+      <div class="card stack">
+        <div class="row"><h2>Blog posts and events</h2><button type="button" class="primary fix" id="p-new">New post</button></div>
+        <div id="p-list"></div>
+      </div>
+      <form id="p-form" class="card stack" hidden>
+        <h2 id="p-form-title">New post</h2>
+        <div class="row">
+          <label>Category <select id="p-cat"><option value="news">News</option><option value="events">Events</option><option value="creatives">Creatives</option><option value="tips">Design tips</option></select></label>
+          <label>Small line above the title <input type="text" id="p-meta" placeholder="News · 14 November 2026"></label>
+        </div>
+        <label>Title <input type="text" id="p-title" required></label>
+        <label>Short summary (shown on the card) <textarea id="p-excerpt"></textarea></label>
+        <div class="row">
+          <label>Cover picture <input type="file" id="p-cover" accept="image/*"></label>
+          <label>Describe the picture (for screen readers) <input type="text" id="p-alt"></label>
+        </div>
+        <label>Full article (leave empty for an event that only links out)
+          <textarea id="p-body" class="tall"></textarea></label>
+        <div class="hint">Writing tips: leave an empty line between paragraphs. <code>## Heading</code> makes a heading. Lines starting with <code>- </code> make bullets, <code>1. </code> makes a numbered list. <code>**bold**</code> makes bold. <code>[link text](https://example.com)</code> makes a link.</div>
+        <div class="row">
+          <label>Link (for events, optional) <input type="url" id="p-link" placeholder="https://"></label>
+          <label>Link text <input type="text" id="p-linklabel" placeholder="Event details on Eventbrite"></label>
+        </div>
+        <label>Note shown when there is no article or link (optional) <input type="text" id="p-note" placeholder="This event has passed"></label>
+        <label class="check"><input type="checkbox" id="p-pub" checked> Show on the site</label>
+        <div class="row"><button type="submit" class="primary fix">Save post</button><button type="button" class="fix" id="p-cancel">Cancel</button></div>
+      </form>
+    </section>
+
+    <section id="t-packages" hidden>
+      <p class="muted" style="margin:0 0 12px">Visitors in Ghana see the Ghana price. Everyone else sees the international price. Type prices exactly as they should appear, for example GH₵3,000 or $650.</p>
+      <div id="k-list"></div>
+    </section>
+
+    <section id="t-reviews" hidden>
+      <div class="card stack">
+        <div class="row"><h2>Client reviews</h2><button type="button" class="primary fix" id="r-new">Add review</button></div>
+        <p class="muted">Only add words a real client sent you.</p>
+        <div id="r-list"></div>
+      </div>
+    </section>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/dm-data.js"></script>
+<script src="assets/supabase.js"></script>
+<script>
+(function () {
+  var sb = supabase.createClient(DM.url, DM.key);
+  var MEDIA = DM.url + '/storage/v1/object/public/media/';
+  var CATS = [['video', 'Video'], ['logos', 'Logos'], ['flyers', 'Flyers'], ['carousels', 'Carousels'], ['thumbnails', 'Thumbnails'], ['packaging', 'Packaging and print'], ['web', 'Web']];
+  var $ = function (id) { return document.getElementById(id); };
+  var views = ['v-loading', 'v-login', 'v-newpass', 'v-denied', 'v-app'];
+  function view(id) { views.forEach(function (v) { $(v).hidden = v !== id; }); }
+  var toastT;
+  function toast(msg, bad) { var t = $('toast'); t.textContent = msg; t.className = 'show' + (bad ? ' bad' : ''); clearTimeout(toastT); toastT = setTimeout(function () { t.className = ''; }, bad ? 7000 : 3000); }
+  function fail(e) { toast((e && e.message) || 'Something went wrong. Please try again.', true); }
+  function check(res) { if (res.error) throw res.error; return res.data; }
+  function el(tag, props, kids) {
+    var n = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) { if (k === 'class') n.className = props[k]; else if (k === 'text') n.textContent = props[k]; else if (k in n) n[k] = props[k]; else n.setAttribute(k, props[k]); });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function field(label, input) { return el('label', {}, [document.createTextNode(label + ' '), input]); }
+  function options(sel, list, value) { sel.innerHTML = ''; list.forEach(function (o) { sel.appendChild(el('option', { value: o[0], text: o[1] })); }); if (value != null) sel.value = value; }
+  // A delete button that asks once more before it acts
+  function delBtn(onYes) {
+    var b = el('button', { type: 'button', class: 'danger', text: 'Delete' }), t;
+    b.addEventListener('click', function () {
+      if (b.classList.contains('sure')) { clearTimeout(t); b.disabled = true; onYes().catch(function (e) { b.disabled = false; fail(e); }); return; }
+      b.classList.add('sure'); b.textContent = 'Tap again to delete';
+      t = setTimeout(function () { b.classList.remove('sure'); b.textContent = 'Delete'; }, 4000);
+    });
+    return b;
+  }
+  function busy(form, on) { [].forEach.call(form.querySelectorAll('button'), function (b) { b.disabled = on; }); }
+
+  // ---------- pictures ----------
+  function resize(file, max) {
+    return new Promise(function (ok, no) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+        var w = Math.round(im.naturalWidth * k), h = Math.round(im.naturalHeight * k);
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(im, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (b) { b ? ok({ blob: b, w: w, h: h }) : no(new Error('Could not read that picture.')); }, 'image/jpeg', 0.82);
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); no(new Error('Could not read ' + file.name + '. Use a JPG or PNG.')); };
+      im.src = url;
+    });
+  }
+  function put(path, blob, type) {
+    return sb.storage.from('media').upload(path, blob, { contentType: type, cacheControl: '31536000', upsert: false }).then(function (r) { check(r); return MEDIA + path; });
+  }
+  function stamp(name) { return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7) + '-' + String(name).toLowerCase().replace(/\.[a-z0-9]+$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40); }
+  function niceTitle(name) { var t = String(name).replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim(); return t.charAt(0).toUpperCase() + t.slice(1); }
+  function removeFiles(urls) {
+    var paths = urls.filter(function (u) { return u && u.indexOf(MEDIA) === 0; }).map(function (u) { return u.slice(MEDIA.length); });
+    return paths.length ? sb.storage.from('media').remove(paths).then(function () {}) : Promise.resolve();
+  }
+  function swapSort(table, a, b) {
+    var sa = a.sort, sbv = b.sort; if (sa === sbv) sbv = sa + 1;
+    return Promise.all([sb.from(table).update({ sort: sbv }).eq('id', a.id), sb.from(table).update({ sort: sa }).eq('id', b.id)]).then(function (rs) { rs.forEach(check); });
+  }
+  function nextSort(rows) { return rows.reduce(function (m, r) { return Math.max(m, r.sort); }, 0) + 10; }
+
+  // ---------- gallery ----------
+  var gal = [];
+  options($('g-cat'), CATS, 'flyers');
+  options($('g-filter'), [['all', 'Everything']].concat(CATS), 'all');
+  function gCatChanged() { var v = $('g-cat').value === 'video'; $('g-video-fields').hidden = !v; $('g-files').multiple = !v; $('g-files-l').firstChild.textContent = v ? 'Cover picture ' : 'Pictures (you can pick several) '; }
+  $('g-cat').addEventListener('change', gCatChanged); gCatChanged();
+  function loadGallery() { return sb.from('gallery_items').select('*').order('sort').order('id').then(function (r) { gal = check(r); drawGallery(); }); }
+  function drawGallery() {
+    var f = $('g-filter').value, rows = gal.filter(function (g) { return f === 'all' || g.category === f; }), list = $('g-list');
+    $('g-count').textContent = rows.length + (rows.length === 1 ? ' piece' : ' pieces');
+    list.innerHTML = '';
+    rows.forEach(function (g, i) {
+      var title = el('input', { type: 'text', value: g.title, maxLength: 120, 'aria-label': 'Title' });
+      var cat = el('select', { 'aria-label': 'Type' }); options(cat, CATS, g.category);
+      var pub = el('input', { type: 'checkbox', checked: g.published });
+      var save = el('button', { type: 'button', class: 'primary', text: 'Save' });
+      save.addEventListener('click', function () {
+        save.disabled = true;
+        sb.from('gallery_items').update({ title: title.value.trim(), category: cat.value, published: pub.checked }).eq('id', g.id).then(function (r) { check(r); toast('Saved'); return loadGallery(); }).catch(function (e) { save.disabled = false; fail(e); });
+      });
+      function mover(label, name, other) {
+        var b = el('button', { type: 'button', class: 'small', text: label, 'aria-label': name, disabled: !other });
+        b.addEventListener('click', function () { b.disabled = true; swapSort('gallery_items', g, other).then(loadGallery).catch(fail); });
+        return b;
+      }
+      var del = delBtn(function () { return sb.from('gallery_items').delete().eq('id', g.id).then(function (r) { check(r); return removeFiles([g.thumb_url, g.full_url, g.video_url]); }).then(function () { toast('Deleted'); return loadGallery(); }); });
+      list.appendChild(el('div', { class: 'item' }, [
+        el('img', { class: 'th', src: g.thumb_url, alt: '', loading: 'lazy' }),
+        el('div', { class: 'body' }, [
+          el('div', { class: 'row' }, [title, cat]),
+          el('div', { class: 'btns' }, [el('label', { class: 'check' }, [pub, document.createTextNode('Show on the site')]), save, mover('↑', 'Move earlier', rows[i - 1]), mover('↓', 'Move later', rows[i + 1]), del])
+        ])
+      ]));
+    });
+  }
+  $('g-filter').addEventListener('change', drawGallery);
+  $('g-add').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target, cat = $('g-cat').value, files = [].slice.call($('g-files').files), note = $('g-add-note');
+    if (!files.length) return toast('Choose a picture first.', true);
+    var job;
+    if (cat === 'video') {
+      var vf = $('g-vfile').files[0], vt = $('g-vtitle').value.trim();
+      if (!vf || !vt) return toast('Add the video title and the video file.', true);
+      if (vf.size > 50 * 1024 * 1024) return toast('That video is over 50 MB. Export a smaller one.', true);
+      busy(form, true); note.textContent = 'Uploading the video. Keep this page open…';
+      job = resize(files[0], 960).then(function (c) {
+        var id = stamp(vt);
+        return Promise.all([put('gallery/' + id + '.jpg', c.blob, 'image/jpeg'), put('gallery/' + id + '.mp4', vf, 'video/mp4')]).then(function (u) {
+          return sb.from('gallery_items').insert({ category: 'video', title: vt, thumb_url: u[0], video_url: u[1], w: c.w, h: c.h, sort: nextSort(gal) }).then(check);
+        });
+      });
+    } else {
+      busy(form, true);
+      var base = nextSort(gal);
+      job = files.reduce(function (p, file, i) {
+        return p.then(function () {
+          note.textContent = 'Uploading ' + (i + 1) + ' of ' + files.length + '…';
+          var id = stamp(file.name);
+          return Promise.all([resize(file, 1400), resize(file, 520)]).then(function (v) {
+            return Promise.all([put('gallery/' + id + '.jpg', v[0].blob, 'image/jpeg'), put('gallery/' + id + '-t.jpg', v[1].blob, 'image/jpeg')]).then(function (u) {
+              return sb.from('gallery_items').insert({ category: cat, title: niceTitle(file.name), thumb_url: u[1], full_url: u[0], w: v[1].w, h: v[1].h, sort: base + i * 10 }).then(check);
+            });
+          });
+        });
+      }, Promise.resolve());
+    }
+    job.then(function () { form.reset(); $('g-cat').value = cat; gCatChanged(); toast('Uploaded. It is on the site now.'); $('g-filter').value = cat; return loadGallery(); })
+      .catch(fail).then(function () { busy(form, false); note.textContent = 'Pictures are resized automatically. New work appears at the end of its type; use the arrows to move it.'; });
+  });
+
+  // ---------- blog ----------
+  var posts = [], editing = null;
+  function loadPosts() { return sb.from('posts').select('*').order('sort').order('id').then(function (r) { posts = check(r); drawPosts(); }); }
+  function drawPosts() {
+    var list = $('p-list'); list.innerHTML = '';
+    posts.forEach(function (p, i) {
+      function mover(label, name, other) { var b = el('button', { type: 'button', class: 'small', text: label, 'aria-label': name, disabled: !other }); b.addEventListener('click', function () { b.disabled = true; swapSort('posts', p, other).then(loadPosts).catch(fail); }); return b; }
+      var edit = el('button', { type: 'button', text: 'Edit' }); edit.addEventListener('click', function () { openPost(p); });
+      var del = delBtn(function () { return sb.from('posts').delete().eq('id', p.id).then(function (r) { check(r); return removeFiles([p.cover_url]); }).then(function () { toast('Deleted'); $('p-form').hidden = true; return loadPosts(); }); });
+      list.appendChild(el('div', { class: 'item' }, [
+        el('img', { class: 'th', src: p.cover_url || 'assets/img/logo-white.png', alt: '' }),
+        el('div', { class: 'body' }, [
+          el('h3', { text: p.title }),
+          el('p', { class: 'muted', text: p.meta + (p.published ? '' : ' · hidden') + (i === 0 ? ' · shown first, as the big card' : '') }),
+          el('div', { class: 'btns' }, [edit, mover('↑', 'Move earlier', posts[i - 1]), mover('↓', 'Move later', posts[i + 1]), del])
+        ])
+      ]));
+    });
+  }
+  function openPost(p) {
+    editing = p;
+    $('p-form-title').textContent = p ? 'Edit post' : 'New post';
+    $('p-cat').value = p ? p.category : 'news'; $('p-meta').value = p ? p.meta : ''; $('p-title').value = p ? p.title : '';
+    $('p-excerpt').value = p ? p.excerpt : ''; $('p-alt').value = p ? p.cover_alt : ''; $('p-body').value = p ? (p.body || '') : '';
+    $('p-link').value = p ? (p.link_url || '') : ''; $('p-linklabel').value = p ? (p.link_label || '') : ''; $('p-note').value = p ? (p.note || '') : '';
+    $('p-pub').checked = p ? p.published : true; $('p-cover').value = '';
+    $('p-form').hidden = false; $('p-form').scrollIntoView({ block: 'start' }); $('p-title').focus();
+  }
+  $('p-new').addEventListener('click', function () { openPost(null); });
+  $('p-cancel').addEventListener('click', function () { $('p-form').hidden = true; });
+  $('p-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target, file = $('p-cover').files[0];
+    if (!editing && !file) return toast('Add a cover picture.', true);
+    var row = { category: $('p-cat').value, meta: $('p-meta').value.trim(), title: $('p-title').value.trim(), excerpt: $('p-excerpt').value.trim(), cover_alt: $('p-alt').value.trim(), body: $('p-body').value.trim() || null, link_url: $('p-link').value.trim() || null, link_label: $('p-linklabel').value.trim() || null, note: $('p-note').value.trim() || null, published: $('p-pub').checked };
+    busy(form, true);
+    var old = editing && editing.cover_url;
+    (file ? resize(file, 1400).then(function (c) { return put('blog/' + stamp(file.name) + '.jpg', c.blob, 'image/jpeg'); }) : Promise.resolve(null)).then(function (url) {
+      if (url) row.cover_url = url;
+      if (editing) return sb.from('posts').update(row).eq('id', editing.id).then(check).then(function () { return url && old ? removeFiles([old]) : null; });
+      row.sort = nextSort(posts);
+      return sb.from('posts').insert(row).then(check);
+    }).then(function () { toast('Saved. It is on the site now.'); form.hidden = true; return loadPosts(); }).catch(fail).then(function () { busy(form, false); });
+  });
+
+  // ---------- packages ----------
+  var GROUP = { content: 'Content plan', video: 'Video plan', oneoff: 'One-off price' };
+  function loadPackages() {
+    return sb.from('packages').select('*').order('grp').order('sort').order('id').then(function (r) {
+      var list = $('k-list'); list.innerHTML = '';
+      check(r).forEach(function (k) {
+        var one = k.grp === 'oneoff';
+        var name = el('input', { type: 'text', value: k.name, required: true }), tag = el('input', { type: 'text', value: k.tagline });
+        var gh = el('input', { type: 'text', value: k.price_gh, required: true }), intl = el('input', { type: 'text', value: k.price_intl, required: true });
+        var feats = el('textarea', { value: (k.features || []).join('\n') });
+        var form = el('form', { class: 'card stack' }, [
+          el('p', { class: 'muted', text: GROUP[k.grp] }),
+          one ? el('h3', { text: 'Single flyer, starting price' }) : el('div', { class: 'row' }, [field('Plan name', name), field('Small label above the name', tag)]),
+          el('div', { class: 'row' }, [field('Ghana price', gh), field('International price', intl)]),
+          one ? null : field('What is included (one per line)', feats),
+          el('div', { class: 'row' }, [el('button', { type: 'submit', class: 'primary fix', text: 'Save' })])
+        ]);
+        form.addEventListener('submit', function (e) {
+          e.preventDefault(); busy(form, true);
+          var row = { price_gh: gh.value.trim(), price_intl: intl.value.trim() };
+          if (!one) { row.name = name.value.trim(); row.tagline = tag.value.trim(); row.features = feats.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); }
+          sb.from('packages').update(row).eq('id', k.id).then(function (r2) { check(r2); toast('Saved. It is on the site now.'); }).catch(fail).then(function () { busy(form, false); });
+        });
+        list.appendChild(form);
+      });
+    });
+  }
+
+  // ---------- reviews ----------
+  var revs = [];
+  function loadReviews() { return sb.from('reviews').select('*').order('sort').order('id').then(function (r) { revs = check(r); drawReviews(); }); }
+  function reviewForm(v, i) {
+    var name = el('input', { type: 'text', value: v ? v.name : '', required: true }), role = el('input', { type: 'text', value: v ? v.role : '', placeholder: 'Company or what you did for them' });
+    var quote = el('textarea', { value: v ? v.quote : '', required: true }), pub = el('input', { type: 'checkbox', checked: v ? v.published : true });
+    var btns = [el('button', { type: 'submit', class: 'primary', text: v ? 'Save' : 'Add' })];
+    if (v) {
+      [['↑', 'Move earlier', revs[i - 1]], ['↓', 'Move later', revs[i + 1]]].forEach(function (m) { var b = el('button', { type: 'button', class: 'small', text: m[0], 'aria-label': m[1], disabled: !m[2] }); b.addEventListener('click', function () { b.disabled = true; swapSort('reviews', v, m[2]).then(loadReviews).catch(fail); }); btns.push(b); });
+      btns.push(delBtn(function () { return sb.from('reviews').delete().eq('id', v.id).then(function (r) { check(r); toast('Deleted'); return loadReviews(); }); }));
+    }
+    var form = el('form', { class: 'item' }, [el('div', { class: 'body' }, [
+      el('div', { class: 'row' }, [field('Client name', name), field('Line under the name', role)]),
+      field('Their words', quote),
+      el('div', { class: 'btns' }, [el('label', { class: 'check' }, [pub, document.createTextNode('Show on the site')])].concat(btns))
+    ])]);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); busy(form, true);
+      var row = { name: name.value.trim(), role: role.value.trim(), quote: quote.value.trim(), published: pub.checked };
+      (v ? sb.from('reviews').update(row).eq('id', v.id) : sb.from('reviews').insert(Object.assign(row, { sort: nextSort(revs) }))).then(function (r) { check(r); toast('Saved. It is on the site now.'); return loadReviews(); }).catch(function (err) { busy(form, false); fail(err); });
+    });
+    return form;
+  }
+  function drawReviews() { var list = $('r-list'); list.innerHTML = ''; revs.forEach(function (v, i) { list.appendChild(reviewForm(v, i)); }); }
+  $('r-new').addEventListener('click', function () { var f = reviewForm(null); $('r-list').insertBefore(f, $('r-list').firstChild); f.querySelector('input').focus(); });
+
+  // ---------- tabs ----------
+  var loaders = { gallery: loadGallery, posts: loadPosts, packages: loadPackages, reviews: loadReviews };
+  [].forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('[data-tab]'), function (o) { o.setAttribute('aria-selected', o === b ? 'true' : 'false'); $('t-' + o.dataset.tab).hidden = o !== b; });
+      loaders[b.dataset.tab]().catch(fail);
+    });
+  });
+
+  // ---------- login ----------
+  var recovering = false, started = null;
+  function enter(session) {
+    $('logout').hidden = !session;
+    if (!session) { started = null; return view('v-login'); }
+    if (recovering) return view('v-newpass');
+    if (started === session.user.id) return;
+    started = session.user.id;
+    sb.rpc('is_admin').then(function (r) {
+      if (!check(r)) return view('v-denied');
+      view('v-app'); return loadGallery();
+    }).catch(function (e) { started = null; view('v-login'); fail(e); });
+  }
+  sb.auth.onAuthStateChange(function (event, session) {
+    if (event === 'PASSWORD_RECOVERY') recovering = true;
+    setTimeout(function () { enter(session); }, 0);
+  });
+  $('v-login').addEventListener('submit', function (e) {
+    e.preventDefault(); busy(e.target, true); $('login-msg').textContent = '';
+    sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value }).then(function (r) {
+      if (r.error) $('login-msg').textContent = /confirm/i.test(r.error.message) ? 'Open the confirmation email we sent you first, then log in.' : 'That email or password is not right.';
+    }).then(function () { busy(e.target, false); });
+  });
+  $('signup').addEventListener('click', function () {
+    var form = $('v-login'); if (!form.reportValidity()) return;
+    busy(form, true);
+    sb.auth.signUp({ email: $('email').value.trim(), password: $('password').value, options: { emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
+      $('login-msg').textContent = r.error ? r.error.message : (r.data.session ? '' : 'Account created. Open the confirmation email, tap the link, then come back here and log in.');
+    }).then(function () { busy(form, false); });
+  });
+  $('forgot').addEventListener('click', function () {
+    var em = $('email').value.trim(); if (!em) return ($('login-msg').textContent = 'Type your email first.');
+    sb.auth.resetPasswordForEmail(em, { redirectTo: location.origin + location.pathname }).then(function (r) { $('login-msg').textContent = r.error ? r.error.message : 'If that email has an account, a reset link is on its way.'; });
+  });
+  $('v-newpass').addEventListener('submit', function (e) {
+    e.preventDefault(); busy(e.target, true);
+    sb.auth.updateUser({ password: $('newpass').value }).then(function (r) { check(r); recovering = false; toast('Password saved.'); return sb.auth.getSession(); }).then(function (r) { enter(r.data.session); }).catch(fail).then(function () { busy(e.target, false); });
+  });
+  $('logout').addEventListener('click', function () { sb.auth.signOut(); });
+})();
+</script>
+</body>
+</html>

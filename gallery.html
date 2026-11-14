@@ -180,6 +180,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #8E6BFF;outline-offset:3p
 <p id="g-title"></p>
 <div class="g-ctl"><button type="button" class="g-step" data-step="-1" aria-label="Previous">&lsaquo;</button><button type="button" data-close>Close</button><button type="button" class="g-step" data-step="1" aria-label="Next">&rsaquo;</button></div>
 </div>
+<script src="assets/dm-data.js"></script>
 <script>
 (function () {
   var grid = document.getElementById('g-grid'), tiles = [].slice.call(grid.querySelectorAll('.g-tile'));
@@ -194,6 +195,31 @@ button:focus-visible,a:focus-visible{outline:3px solid #8E6BFF;outline-offset:3p
   chips.forEach(function (c) { c.addEventListener('click', function () { setFilter(c.dataset.filter); history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : '#' + c.dataset.filter); }); });
   function fromHash() { setFilter((location.hash || '#all').slice(1)); }
   window.addEventListener('hashchange', fromHash); fromHash();
+  // Load the current gallery from the database; the built-in tiles stay if this fails
+  if (window.DM) window.DM.table('gallery_items', 'select=category,title,thumb_url,full_url,video_url,w,h&published=is.true&order=sort,id').then(function (rows) {
+    if (!rows.length) return;
+    var frag = document.createDocumentFragment(), counts = { all: rows.length };
+    rows.forEach(function (r) {
+      counts[r.category] = (counts[r.category] || 0) + 1;
+      var b = document.createElement('button'), ratio = (r.w || 4) / (r.h || 5), cls = 'g-tile';
+      if (ratio > 1.25) cls += ' wide';
+      if (ratio > 2.1 || (ratio > 0.92 && ratio <= 1.25)) cls += ' fit';
+      if (ratio < 0.6) cls += ' top';
+      b.type = 'button'; b.className = cls; b.dataset.cat = r.category;
+      var im = document.createElement('img'); im.src = r.thumb_url; im.loading = 'lazy'; im.decoding = 'async'; im.width = r.w; im.height = r.h;
+      b.appendChild(im);
+      if (r.video_url) {
+        b.dataset.video = r.video_url; b.setAttribute('aria-label', 'Play ' + r.title + ' with sound'); im.alt = '';
+        var pl = document.createElement('span'); pl.className = 'g-play'; pl.setAttribute('aria-hidden', 'true'); pl.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg>'; b.appendChild(pl);
+        var cap = document.createElement('span'); cap.className = 'g-cap'; cap.textContent = r.title; b.appendChild(cap);
+      } else { b.dataset.full = r.full_url || r.thumb_url; b.setAttribute('aria-label', 'Open ' + r.title); im.alt = r.title; }
+      frag.appendChild(b);
+    });
+    grid.innerHTML = ''; grid.appendChild(frag);
+    tiles = [].slice.call(grid.querySelectorAll('.g-tile'));
+    chips.forEach(function (c) { c.querySelector('span').textContent = counts[c.dataset.filter] || 0; });
+    fromHash();
+  }).catch(function () {});
   function pics() { return tiles.filter(function (t) { return !t.hidden && t.dataset.full; }); }
   function show(t) {
     if (t.dataset.video) { box.className = 'open is-vid'; title.textContent = t.querySelector('.g-cap').textContent; vid.src = t.dataset.video; vid.play().catch(function () {}); }
