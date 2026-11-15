@@ -29,9 +29,10 @@
   DM.table('home_media', 'select=original,url').then(function (rows) {
     rows.forEach(function (r) {
       [].forEach.call(document.querySelectorAll('img, video'), function (n) {
-        if (n.getAttribute('src') !== r.original) return;
+        var lazy = n.tagName === 'VIDEO' && !n.getAttribute('src') && n.dataset.src;
+        if ((lazy ? n.dataset.src : n.getAttribute('src')) !== r.original) return;
         if (n.tagName === 'VIDEO') n.removeAttribute('poster');
-        n.src = r.url;
+        if (lazy) n.dataset.src = r.url; else n.src = r.url;
       });
       var full = r.original.replace('-preview.mp4', '-full.mp4');
       [].forEach.call(document.querySelectorAll('[data-video]'), function (n) { if (n.dataset.video === full) n.dataset.video = r.url; });
