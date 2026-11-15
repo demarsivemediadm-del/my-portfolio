@@ -27,6 +27,21 @@ window.DM = (function () {
   return {
     url: URL, key: KEY, esc: esc, md: md,
     table: function (name, query) { return req(name + '?' + query); },
-    rpc: function (name) { return req('rpc/' + name, { method: 'POST', body: '{}' }); }
+    rpc: function (name, args) {
+      return fetch(URL + '/rest/v1/rpc/' + name, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) }).then(function (r) {
+        return r.text().then(function (t) { var j = t ? JSON.parse(t) : null; if (!r.ok) throw new Error((j && j.message) || 'Something went wrong. Please try again.'); return j; });
+      });
+    },
+    device: function () {
+      var id = null;
+      try { id = localStorage.getItem('dm-dev'); } catch (e) {}
+      if (!id) { id = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12); try { localStorage.setItem('dm-dev', id); } catch (e) {} }
+      return id;
+    },
+    // Counts a visit or a tap. Nothing about the person is stored, only a daily total.
+    track: function (name, oncePerVisit) {
+      try { if (oncePerVisit) { if (sessionStorage.getItem('dm-t-' + name)) return; sessionStorage.setItem('dm-t-' + name, '1'); } } catch (e) {}
+      this.rpc('track', { p_name: name }).catch(function () {});
+    }
   };
 })();

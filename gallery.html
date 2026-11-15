@@ -198,6 +198,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #8E6BFF;outline-offset:3p
   chips.forEach(function (c) { c.addEventListener('click', function () { setFilter(c.dataset.filter); history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : '#' + c.dataset.filter); }); });
   function fromHash() { setFilter((location.hash || '#all').slice(1)); }
   window.addEventListener('hashchange', fromHash); fromHash();
+  if (window.DM) { window.DM.track('gallery', true); document.addEventListener('click', function (e) { var w = e.target.closest && e.target.closest('a[href*="wa.me"]'); if (w) window.DM.track('whatsapp'); }); }
   // Load the current gallery from the database; the built-in tiles stay if this fails
   if (window.DM) window.DM.table('gallery_items', 'select=category,title,thumb_url,full_url,video_url,w,h&published=is.true&order=sort,id').then(function (rows) {
     if (!rows.length) return;

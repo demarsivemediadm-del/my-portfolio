@@ -99,7 +99,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <button type="button" role="tab" data-tab="posts" aria-selected="false">Blog</button>
       <button type="button" role="tab" data-tab="packages" aria-selected="false">Packages</button>
       <button type="button" role="tab" data-tab="reviews" aria-selected="false">Reviews</button>
+      <button type="button" role="tab" data-tab="comments" aria-selected="false">Comments</button>
       <button type="button" role="tab" data-tab="home" aria-selected="false">Home page</button>
+      <button type="button" role="tab" data-tab="stats" aria-selected="false">Visitors</button>
     </div>
 
     <section id="t-gallery">
@@ -160,6 +162,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <div id="k-list"></div>
     </section>
 
+    <section id="t-comments" hidden>
+      <div class="card stack">
+        <h2>Blog comments</h2>
+        <p class="muted">New comments wait here. Nothing shows on the site until you approve it.</p>
+        <div id="c-list"></div>
+      </div>
+    </section>
+
+    <section id="t-stats" hidden>
+      <div class="card stack">
+        <h2>Visitors, last 30 days</h2>
+        <p class="muted">A visit is counted once each time someone opens the site. WhatsApp taps and contact messages show how many visitors reached out. Counting started on 15 November 2026.</p>
+        <div id="s-totals" class="row"></div>
+        <div id="s-list" style="overflow-x:auto"></div>
+      </div>
+    </section>
+
     <section id="t-home" hidden>
       <p class="muted" style="margin:0 0 12px">Swap any picture or video on the home page. Use the same shape as the one you are replacing (tall for tall, wide for wide) so it fits. Videos must be MP4 and under 50 MB; shorter and smaller plays smoother on phones.</p>
       <div id="h-list"></div>
@@ -168,7 +187,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <section id="t-reviews" hidden>
       <div class="card stack">
         <div class="row"><h2>Client reviews</h2><button type="button" class="primary fix" id="r-new">Add review</button></div>
-        <p class="muted">Only add words a real client sent you.</p>
+        <p class="muted">Only show words a real client sent you. Reviews sent through the site arrive hidden, marked "Sent through the site". Tick "Show on the site" and Save to publish one.</p>
         <div id="r-list"></div>
       </div>
     </section>
@@ -391,19 +410,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   function reviewForm(v, i) {
     var name = el('input', { type: 'text', value: v ? v.name : '', required: true }), role = el('input', { type: 'text', value: v ? v.role : '', placeholder: 'Company or what you did for them' });
     var quote = el('textarea', { value: v ? v.quote : '', required: true }), pub = el('input', { type: 'checkbox', checked: v ? v.published : true });
+    var rating = el('select', {}); options(rating, [['', 'No stars'], ['5', '5 stars'], ['4', '4 stars'], ['3', '3 stars'], ['2', '2 stars'], ['1', '1 star']], v && v.rating ? String(v.rating) : '');
     var btns = [el('button', { type: 'submit', class: 'primary', text: v ? 'Save' : 'Add' })];
     if (v) {
       [['↑', 'Move earlier', revs[i - 1]], ['↓', 'Move later', revs[i + 1]]].forEach(function (m) { var b = el('button', { type: 'button', class: 'small', text: m[0], 'aria-label': m[1], disabled: !m[2] }); b.addEventListener('click', function () { b.disabled = true; swapSort('reviews', v, m[2]).then(loadReviews).catch(fail); }); btns.push(b); });
       btns.push(delBtn(function () { return sb.from('reviews').delete().eq('id', v.id).then(function (r) { check(r); toast('Deleted'); return loadReviews(); }); }));
     }
     var form = el('form', { class: 'item' }, [el('div', { class: 'body' }, [
-      el('div', { class: 'row' }, [field('Client name', name), field('Line under the name', role)]),
+      v && v.submitted ? el('p', { class: 'muted', text: 'Sent through the site' + (v.published ? '' : ' · waiting for you, not shown yet') }) : null,
+      el('div', { class: 'row' }, [field('Client name', name), field('Line under the name', role), field('Stars', rating)]),
       field('Their words', quote),
       el('div', { class: 'btns' }, [el('label', { class: 'check' }, [pub, document.createTextNode('Show on the site')])].concat(btns))
     ])]);
     form.addEventListener('submit', function (e) {
       e.preventDefault(); busy(form, true);
-      var row = { name: name.value.trim(), role: role.value.trim(), quote: quote.value.trim(), published: pub.checked };
+      var row = { name: name.value.trim(), role: role.value.trim(), quote: quote.value.trim(), published: pub.checked, rating: rating.value ? Number(rating.value) : null };
       (v ? sb.from('reviews').update(row).eq('id', v.id) : sb.from('reviews').insert(Object.assign(row, { sort: nextSort(revs) }))).then(function (r) { check(r); toast('Saved. It is on the site now.'); return loadReviews(); }).catch(function (err) { busy(form, false); fail(err); });
     });
     return form;
@@ -445,8 +466,49 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     });
   }
 
+  // ---------- comments ----------
+  function loadComments() {
+    return sb.from('comments').select('*, posts(title)').order('approved').order('created_at', { ascending: false }).then(function (r) {
+      var rows = check(r), list = $('c-list'); list.innerHTML = '';
+      if (!rows.length) list.appendChild(el('p', { class: 'muted', text: 'No comments yet.' }));
+      rows.forEach(function (c) {
+        var ok = el('button', { type: 'button', class: c.approved ? '' : 'primary', text: c.approved ? 'Hide again' : 'Approve' });
+        ok.addEventListener('click', function () { ok.disabled = true; sb.from('comments').update({ approved: !c.approved }).eq('id', c.id).then(function (x) { check(x); toast(c.approved ? 'Hidden' : 'Approved. It is on the site now.'); return loadComments(); }).catch(fail); });
+        var del = delBtn(function () { return sb.from('comments').delete().eq('id', c.id).then(function (x) { check(x); toast('Deleted'); return loadComments(); }); });
+        list.appendChild(el('div', { class: 'item' }, [el('div', { class: 'body' }, [
+          el('p', { class: 'muted', text: (c.approved ? 'Showing' : 'Waiting for approval') + ' · on "' + ((c.posts && c.posts.title) || 'a post') + '" · ' + new Date(c.created_at).toLocaleString() }),
+          el('h3', { text: c.name }), el('p', { text: c.body, style: 'white-space:pre-wrap;overflow-wrap:anywhere' }),
+          el('div', { class: 'btns' }, [ok, del])
+        ])]));
+      });
+    });
+  }
+
+  // ---------- visitor counts ----------
+  function loadStats() {
+    var since = new Date(Date.now() - 29 * 864e5).toISOString().slice(0, 10);
+    return sb.from('site_events').select('*').gte('day', since).order('day', { ascending: false }).then(function (r) {
+      var rows = check(r), days = {}, tot = { visit: 0, gallery: 0, whatsapp: 0, contact: 0 };
+      rows.forEach(function (x) { (days[x.day] = days[x.day] || {})[x.name] = x.n; if (x.name in tot) tot[x.name] += x.n; });
+      var totals = $('s-totals'); totals.innerHTML = '';
+      [['Visits', tot.visit], ['Gallery opens', tot.gallery], ['WhatsApp taps', tot.whatsapp], ['Contact messages', tot.contact]].forEach(function (t) {
+        totals.appendChild(el('div', { class: 'hint' }, [el('p', { class: 'muted', text: t[0] }), el('h2', { text: String(t[1]) })]));
+      });
+      var list = $('s-list'); list.innerHTML = '';
+      var keys = Object.keys(days);
+      if (!keys.length) return list.appendChild(el('p', { class: 'muted', text: 'Nothing counted yet. Check back after the site has had some visitors.' }));
+      var table = el('table', { style: 'width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums' });
+      table.appendChild(el('tr', {}, ['Day', 'Visits', 'Gallery', 'WhatsApp', 'Contact'].map(function (hd, i) { return el('th', { text: hd, style: 'text-align:' + (i ? 'right' : 'left') + ';padding:8px 6px;border-bottom:1px solid #3A3A44;font-size:14px;color:#A9A9B2' }); })));
+      keys.forEach(function (k) {
+        var dd = days[k];
+        table.appendChild(el('tr', {}, [k, dd.visit || 0, dd.gallery || 0, dd.whatsapp || 0, dd.contact || 0].map(function (val, i) { return el('td', { text: String(val), style: 'text-align:' + (i ? 'right' : 'left') + ';padding:8px 6px;border-bottom:1px solid #2A2A32' }); })));
+      });
+      list.appendChild(table);
+    });
+  }
+
   // ---------- tabs ----------
-  var loaders = { gallery: loadGallery, posts: loadPosts, packages: loadPackages, reviews: loadReviews, home: loadHome };
+  var loaders = { gallery: loadGallery, posts: loadPosts, packages: loadPackages, reviews: loadReviews, home: loadHome, comments: loadComments, stats: loadStats };
   [].forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
     b.addEventListener('click', function () {
       [].forEach.call(document.querySelectorAll('[data-tab]'), function (o) { o.setAttribute('aria-selected', o === b ? 'true' : 'false'); $('t-' + o.dataset.tab).hidden = o !== b; });

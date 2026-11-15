@@ -41,14 +41,16 @@
 
   // Reviews
   var revSec = document.getElementById('reviews');
-  if (revSec) DM.table('reviews', 'select=name,role,quote&published=is.true&order=sort,id').then(function (rows) {
+  if (revSec) DM.table('reviews', 'select=name,role,quote,rating&published=is.true&order=sort,id').then(function (rows) {
     var first = revSec.querySelector('figure'); if (!first || !rows.length) return;
     var wrap = first.parentElement.parentElement, cards = [].slice.call(wrap.children);
     var mid = cards[1] || cards[0];
     rows.forEach(function (r, i) {
       var c = cards[i];
       if (!c) { c = mid.cloneNode(true); wrap.appendChild(c); }
-      c.querySelector('blockquote').textContent = r.quote;
+      var bq = c.querySelector('blockquote'); bq.textContent = r.quote;
+      var st = c.querySelector('.dm-stars'); if (st) st.remove();
+      if (r.rating) { st = document.createElement('div'); st.className = 'dm-stars'; st.setAttribute('role', 'img'); st.setAttribute('aria-label', r.rating + ' out of 5 stars'); st.textContent = '\u2605\u2605\u2605\u2605\u2605'.slice(0, r.rating); bq.parentNode.insertBefore(st, bq); }
       var cap = c.querySelector('figcaption'), spans = cap.children;
       spans[0].textContent = (r.name || '?').trim().charAt(0).toUpperCase();
       spans[1].innerHTML = '';
@@ -58,6 +60,87 @@
     });
     cards.slice(rows.length).forEach(function (c) { c.remove(); });
   }).catch(function () {});
+
+  // ---------- likes ----------
+  var likeCounts = {}, liked = {};
+  try { liked = JSON.parse(localStorage.getItem('dm-liked') || '{}'); } catch (e) {}
+  var HEART = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C1 8.300 2.900 4.500 6.500 4.500c2.200 0 3.600 1.200 4.500 2.500h2c.900-1.300 2.300-2.500 4.500-2.500 3.600 0 5.500 3.800 4.100 7.200C19.500 16.400 12 21 12 21z"/></svg>';
+  function paintLikes() {
+    [].forEach.call(document.querySelectorAll('.dm-like'), function (b) {
+      var id = b.dataset.like, on = !!liked[id], n = likeCounts[id] || 0;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.querySelector('span').textContent = n ? String(n) : 'Like';
+      b.setAttribute('aria-label', (on ? 'Unlike this post' : 'Like this post') + (n ? ', ' + n + (n === 1 ? ' like' : ' likes') : ''));
+    });
+  }
+  function likeBtn(id) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'dm-like'; b.dataset.like = id; b.innerHTML = HEART + '<span>Like</span>';
+    return b;
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.dm-like'); if (!b || b.disabled) return;
+    var id = b.dataset.like; b.disabled = true;
+    DM.rpc('toggle_like', { p_post: Number(id), p_device: DM.device() }).then(function (r) {
+      likeCounts[id] = r.n; if (r.liked) liked[id] = 1; else delete liked[id];
+      try { localStorage.setItem('dm-liked', JSON.stringify(liked)); } catch (err) {}
+    }).catch(function () {}).then(function () { b.disabled = false; paintLikes(); });
+  });
+
+  // ---------- comments (shown under an open article) ----------
+  window.DMPostExtras = function (post, holder) {
+    holder.innerHTML = '';
+    var top = document.createElement('div'); top.className = 'dm-likerow'; top.appendChild(likeBtn(post.id)); holder.appendChild(top);
+    var h = document.createElement('h3'); h.textContent = 'Comments'; holder.appendChild(h);
+    var list = document.createElement('div'); list.className = 'dm-comments'; list.textContent = 'Loading…'; holder.appendChild(list);
+    DM.table('comments', 'select=name,body,created_at&post_id=eq.' + Number(post.id) + '&approved=is.true&order=created_at').then(function (rows) {
+      list.textContent = rows.length ? '' : 'No comments yet. Be the first.';
+      rows.forEach(function (c) {
+        var d = document.createElement('div'); d.className = 'dm-comment';
+        var n = document.createElement('strong'); n.textContent = c.name;
+        var t = document.createElement('span'); t.textContent = new Date(c.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+        var p = document.createElement('p'); p.textContent = c.body;
+        d.appendChild(n); d.appendChild(t); d.appendChild(p); list.appendChild(d);
+      });
+    }).catch(function () { list.textContent = 'Comments could not be loaded.'; });
+    var f = document.createElement('form'); f.className = 'dm-form';
+    f.innerHTML = '<label>Your name<input name="name" maxlength="60" required autocomplete="name"></label><label>Your comment<textarea name="body" maxlength="1000" required rows="3"></textarea></label><input name="website" class="dm-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Post comment</button><p role="status"></p>';
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); var btn = f.querySelector('button'), msg = f.querySelector('[role=status]'); btn.disabled = true; msg.textContent = '';
+      DM.rpc('add_comment', { p_post: Number(post.id), p_name: f.name.value, p_body: f.body.value, p_hp: f.website.value }).then(function () {
+        f.reset(); msg.textContent = 'Thank you. Your comment will appear once it has been approved.';
+      }).catch(function (err) { msg.textContent = err.message; }).then(function () { btn.disabled = false; });
+    });
+    holder.appendChild(f); paintLikes();
+  };
+
+  // ---------- leave a review ----------
+  var revSec2 = document.getElementById('reviews');
+  if (revSec2) {
+    var open = document.createElement('button'); open.type = 'button'; open.className = 'dm-revopen'; open.textContent = 'Leave a review';
+    revSec2.appendChild(open);
+    var box = document.createElement('div'); box.id = 'dm-revbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Leave a review');
+    box.innerHTML = '<form class="dm-form"><h3>Leave a review</h3><p>Worked with us? Tell others how it went. Reviews appear after we have checked them.</p>'
+      + '<fieldset><legend>Your rating</legend><div class="dm-rate">' + [5, 4, 3, 2, 1].map(function (n) { return '<input type="radio" name="rating" id="dm-r' + n + '" value="' + n + '" required><label for="dm-r' + n + '" aria-label="' + n + (n === 1 ? ' star' : ' stars') + '">\u2605</label>'; }).join('') + '</div></fieldset>'
+      + '<label>Your name<input name="name" maxlength="60" required autocomplete="name"></label><label>Business, or what we did for you<input name="role" maxlength="80"></label><label>Your review<textarea name="quote" maxlength="600" required rows="4"></textarea></label>'
+      + '<input name="website" class="dm-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="dm-formbtns"><button type="submit">Send review</button><button type="button" data-close>Close</button></div><p role="status"></p></form>';
+    document.body.appendChild(box);
+    var rf = box.querySelector('form');
+    function shut() { box.classList.remove('open'); document.body.style.overflow = ''; open.focus(); }
+    open.addEventListener('click', function () { box.classList.add('open'); document.body.style.overflow = 'hidden'; rf.name.focus(); });
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('[data-close]')) shut(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('open')) shut(); });
+    rf.addEventListener('submit', function (e) {
+      e.preventDefault(); var btn = rf.querySelector('button[type=submit]'), msg = rf.querySelector('[role=status]'); btn.disabled = true; msg.textContent = '';
+      DM.rpc('submit_review', { p_name: rf.name.value, p_role: rf.role.value, p_quote: rf.quote.value, p_rating: Number(rf.rating.value), p_hp: rf.website.value }).then(function () {
+        rf.reset(); msg.textContent = 'Thank you. Your review has been sent and will appear once it has been checked.';
+      }).catch(function (err) { msg.textContent = err.message; }).then(function () { btn.disabled = false; });
+    });
+  }
+
+  // ---------- simple counts: visits, WhatsApp taps, contact form ----------
+  DM.track('visit', true);
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href*="wa.me"]'); if (a) DM.track('whatsapp'); });
+  var cf = document.getElementById('contact-form'); if (cf) cf.addEventListener('submit', function () { DM.track('contact'); });
 
   // Blog
   var blog = document.getElementById('blog');
@@ -78,9 +161,11 @@
       else if (r.link_url && /^https?:\/\//.test(r.link_url)) { act = document.createElement('a'); act.href = r.link_url; act.target = '_blank'; act.rel = 'noopener'; act.style.cssText = sLink; act.textContent = (r.link_label || 'Open link') + ' ›'; }
       else { act = document.createElement('span'); act.style.cssText = sNote; act.textContent = r.note || ''; }
       box.replaceChild(act, box.lastElementChild);
+      var row = document.createElement('div'); row.className = 'dm-likerow'; row.appendChild(likeBtn(r.id)); box.appendChild(row);
       return a;
     });
     arts.forEach(function (a) { a.remove(); });
     out.forEach(function (a) { list.appendChild(a); });
+    DM.rpc('post_like_counts').then(function (cs) { cs.forEach(function (c) { likeCounts[c.post_id] = c.n; }); paintLikes(); }).catch(function () {});
   }).catch(function () {});
 })();
