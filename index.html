@@ -173,7 +173,7 @@ a{color:#5B2FD0}a:hover{color:#3F1FA0}
 <div style="aspect-ratio: 4 / 3; overflow: hidden"><img loading="lazy" decoding="async" class="dm-anim" src="assets/img/web-shop.jpg" alt="" style="width: 100%; height: auto; display: block; animation: dmscroll 16s ease-in-out infinite"></div>
 </div>
 </div>
-<a class="bk-tile" href="https://bookyme.demarsivemedia.com/"><div class="bk-txt"><span class="bk-eyebrow">New from the studio</span><h2>Bookyme</h2><p>Your brand on every invoice. Branded invoices, receipts, letterheads, thank-you cards and a bookings diary, all from your phone.</p><span class="bk-cta">See Bookyme ›</span></div><div class="bk-doc" aria-hidden="true"><div class="bk-top"><b>YOUR LOGO</b><i>INVOICE</i></div><div class="bk-line"></div><div class="bk-line s"></div><div class="bk-row"><span></span><span></span><span></span></div><div class="bk-row"><span></span><span></span><span></span></div><div class="bk-total"><span>Total</span><b>6,000.00</b></div><div class="bk-stamp">PAID</div></div></a>
+<a class="bk-tile" href="https://bookyme.demarsivemedia.com/"><div class="bk-txt"><img loading="lazy" decoding="async" class="bk-logo" src="https://bookyme.demarsivemedia.com/img/bookyme-logo-on-dark.svg" alt="Bookyme" width="170" height="40"><h2>Your brand on every <span class="bk-word">invoice</span>.</h2><p>Branded invoices, receipts, letterheads and thank-you cards, plus a bookings diary. Made on your phone, sent in seconds.</p><span class="bk-cta">See Bookyme <b>›</b></span><span class="bk-note">New from the studio</span></div><div class="bk-deck" aria-hidden="true"><figure class="bk-card" data-pos="0" data-name="Invoice"><img loading="lazy" decoding="async" src="https://bookyme.demarsivemedia.com/img/endless-invoice.webp" alt="Sample invoice made with Bookyme" loading="lazy" decoding="async"></figure><figure class="bk-card" data-pos="1" data-name="Receipt"><img loading="lazy" decoding="async" src="https://bookyme.demarsivemedia.com/img/endless-receipt.webp" alt="Sample receipt made with Bookyme" loading="lazy" decoding="async"></figure><figure class="bk-card" data-pos="2" data-name="Letterhead"><img loading="lazy" decoding="async" src="https://bookyme.demarsivemedia.com/img/endless-letter.webp" alt="Sample letterhead made with Bookyme" loading="lazy" decoding="async"></figure><figure class="bk-card" data-pos="3" data-name="Thank-you card"><img loading="lazy" decoding="async" src="https://bookyme.demarsivemedia.com/img/endless-thanks.webp" alt="Sample thank-you card made with Bookyme" loading="lazy" decoding="async"></figure><span class="bk-chip">Invoice</span></div></a>
 </section>
 
 <section id="packages" style="position: relative; overflow: hidden; background: #0B0B0E; color: #FFFFFF; padding: clamp(56px, 7vw, 96px) clamp(20px, 5vw, 72px); display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; margin-bottom: 12px">
@@ -418,20 +418,30 @@ html{background:#050507}
 body{background:#FFFFFF}
 #more{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media (max-width:900px){#more{grid-template-columns:minmax(0,1fr)!important}}
-.bk-tile{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:clamp(24px,4vw,56px);padding:clamp(32px,5vw,64px);background:linear-gradient(135deg,#1B1036,#3B1E8F 60%,#5B2FD0);color:#fff;text-decoration:none;overflow:hidden}
-.bk-eyebrow{display:inline-block;font-size:15px;font-weight:600;color:#C3B1FF;margin-bottom:10px}
-.bk-tile h2{margin:0;font-size:clamp(38px,5vw,64px);font-weight:600;letter-spacing:-.02em;line-height:1}
-.bk-tile p{margin:14px 0 22px;font-size:clamp(18px,1.6vw,21px);line-height:1.45;color:#E4DDFF;max-width:520px}
-.bk-cta{display:inline-flex;align-items:center;min-height:50px;padding:0 26px;border-radius:999px;background:#fff;color:#1B1036;font-weight:600;font-size:17px}
-.bk-tile:hover .bk-cta{background:#C3B1FF}
+.bk-tile{grid-column:1/-1;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,4vw,64px);padding:clamp(36px,5vw,72px);background:radial-gradient(120% 90% at 85% 50%,#4A22C9 0%,#26115E 45%,#0E0820 100%);color:#fff;text-decoration:none;overflow:hidden;isolation:isolate}
+.bk-tile::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0 70%,rgba(160,130,255,.22) 80%,transparent 90%);animation:bkSweep 9s linear infinite;z-index:-1}
+@keyframes bkSweep{to{transform:rotate(1turn)}}
+.bk-logo{display:block;height:40px;width:auto;margin-bottom:22px}
+.bk-tile h2{margin:0;color:#fff!important;font-size:clamp(36px,4.6vw,64px);font-weight:600;letter-spacing:-.025em;line-height:1.02}
+.bk-word{display:block;min-height:1.02em;color:#C3B1FF;transition:opacity .35s,transform .35s}
+.bk-word.out{opacity:0;transform:translateY(.25em)}
+.bk-tile p{margin:18px 0 26px;font-size:clamp(18px,1.6vw,21px);line-height:1.45;color:#E4DDFF!important;max-width:500px}
+.bk-cta{display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 28px;border-radius:999px;background:#fff;color:#14092E!important;font-weight:600;font-size:17px;box-shadow:0 0 0 0 rgba(195,177,255,.6);animation:bkPulse 2.8s ease-out infinite}
+.bk-cta b{transition:transform .25s}.bk-tile:hover .bk-cta b{transform:translateX(4px)}
+@keyframes bkPulse{0%{box-shadow:0 0 0 0 rgba(195,177,255,.55)}70%,100%{box-shadow:0 0 0 16px rgba(195,177,255,0)}}
+.bk-note{display:block;margin-top:16px;font-size:15px;color:#C3B1FF}
 .bk-tile:focus-visible{outline:3px solid #C3B1FF;outline-offset:-6px}
-.bk-doc{position:relative;justify-self:center;width:min(100%,340px);aspect-ratio:3/4;background:#FBFAF7;border-radius:14px;padding:22px;box-sizing:border-box;color:#1B1036;box-shadow:0 30px 60px rgba(0,0,0,.35);transform:rotate(4deg);display:flex;flex-direction:column;gap:12px}
-.bk-top{display:flex;justify-content:space-between;align-items:center;font-size:13px}.bk-top b{background:#5B2FD0;color:#fff;padding:5px 9px;border-radius:6px}.bk-top i{font-style:normal;font-weight:700;letter-spacing:.08em}
-.bk-line{height:9px;border-radius:5px;background:#E4E0F0;width:70%}.bk-line.s{width:45%}
-.bk-row{display:grid;grid-template-columns:3fr 1fr 1fr;gap:8px}.bk-row span{height:9px;border-radius:5px;background:#EDEAF5}
-.bk-total{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #1B1036;padding-top:10px;font-size:14px}.bk-total b{font-size:19px}
-.bk-stamp{position:absolute;right:18px;bottom:62px;transform:rotate(-14deg);border:3px solid #0B8A5A;color:#0B8A5A;font-weight:800;font-size:20px;letter-spacing:.1em;padding:3px 10px;border-radius:8px;opacity:.85}
-@media (max-width:900px){.bk-tile{grid-template-columns:1fr}.bk-doc{width:min(78%,300px);transform:rotate(3deg)}}
+.bk-deck{position:relative;height:clamp(360px,36vw,500px);perspective:1200px}
+.bk-card{position:absolute;left:50%;top:50%;width:clamp(210px,21vw,300px);margin:0;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(0,0,0,.45);transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s,filter .9s}
+.bk-card img{display:block;width:100%;height:auto}
+.bk-card[data-pos="0"]{transform:translate(-50%,-50%) rotate(-3deg);z-index:4}
+.bk-card[data-pos="1"]{transform:translate(-14%,-54%) rotate(7deg) scale(.92);z-index:3;filter:brightness(.8)}
+.bk-card[data-pos="2"]{transform:translate(-86%,-46%) rotate(-12deg) scale(.86);z-index:2;filter:brightness(.62)}
+.bk-card[data-pos="3"]{transform:translate(-50%,-40%) rotate(2deg) scale(.8);z-index:1;opacity:0}
+.bk-card.fly{transform:translate(40%,-130%) rotate(24deg) scale(.9)!important;opacity:0;z-index:5}
+.bk-chip{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:6;background:#fff;color:#14092E;font-weight:600;font-size:15px;padding:8px 16px;border-radius:999px;box-shadow:0 10px 24px rgba(0,0,0,.35);white-space:nowrap}
+@media (max-width:900px){.bk-tile{grid-template-columns:1fr}.bk-deck{height:400px}.bk-card{width:min(58vw,240px)}}
+@media (prefers-reduced-motion:reduce){.bk-tile::before,.bk-cta{animation:none}.bk-card{transition:none}}
 /* likes, comments, review form */
 .dm-likerow{display:flex;margin-top:12px}
 .dm-like{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(120,120,130,.45);background:transparent;color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
@@ -748,6 +758,13 @@ body{background:#FFFFFF}
 </script>
 <script src="assets/dm-data.js?v=3471cdc5"></script>
 <script src="assets/home-data.js?v=3ace7312"></script>
+<script>(function(){var d=document.querySelector('.bk-deck');if(!d)return;var cards=[].slice.call(d.querySelectorAll('.bk-card')),chip=d.querySelector('.bk-chip'),word=document.querySelector('.bk-word');
+var words={'Invoice':'invoice','Receipt':'receipt','Letterhead':'letterhead','Thank-you card':'thank-you'};
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var vis=false;
+new IntersectionObserver(function(e){vis=e[0].isIntersecting}).observe(d);
+setInterval(function(){if(!vis||document.hidden)return;var top=cards.filter(function(c){return c.dataset.pos==='0'})[0];top.classList.add('fly');
+setTimeout(function(){cards.forEach(function(c){c.dataset.pos=String((+c.dataset.pos+3)%4)});top.classList.remove('fly');
+var nt=cards.filter(function(c){return c.dataset.pos==='0'})[0].dataset.name;chip.textContent=nt;if(word){word.classList.add('out');setTimeout(function(){word.textContent=words[nt];word.classList.remove('out')},300)}},450)},2800)})();</script>
 
 </body>
 </html>
