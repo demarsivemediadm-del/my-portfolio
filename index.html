@@ -418,6 +418,8 @@ html{background:#050507}
 body{background:#FFFFFF}
 #more{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media (max-width:900px){#more{grid-template-columns:minmax(0,1fr)!important}}
+.dm-share{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;margin-left:8px;border-radius:999px;border:1px solid rgba(120,120,130,.45);background:transparent;color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}.dm-share:hover{border-color:#5B2FD0;color:#5B2FD0}
+.dm-flash{outline:3px solid #5B2FD0;outline-offset:6px;border-radius:20px;transition:outline-color .6s}
 .bk-tile{grid-column:1/-1;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,4vw,64px);padding:clamp(36px,5vw,72px);background:radial-gradient(120% 90% at 85% 50%,#4A22C9 0%,#26115E 45%,#0E0820 100%);color:#fff;text-decoration:none;overflow:hidden;isolation:isolate}
 .bk-tile::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0 70%,rgba(160,130,255,.22) 80%,transparent 90%);animation:bkSweep 9s linear infinite;z-index:-1}
 @keyframes bkSweep{to{transform:rotate(1turn)}}
@@ -619,7 +621,7 @@ body{background:#FFFFFF}
   var modal = document.getElementById('dm-modal');
   function closeAll() {
     if (lightbox.classList.contains('open')) { lbVideo.pause(); lbVideo.removeAttribute('src'); lbVideo.load(); close(lightbox); }
-    if (modal.classList.contains('open')) close(modal);
+    if (modal.classList.contains('open')) { close(modal); if (/[?&]post=/.test(location.search)) try { history.replaceState(null, '', location.pathname + '#blog'); } catch (err) {} }
   }
   document.addEventListener('click', function (e) {
     var v = e.target.closest('[data-video]');
@@ -757,7 +759,7 @@ body{background:#FFFFFF}
 })();
 </script>
 <script src="assets/dm-data.js?v=3471cdc5"></script>
-<script src="assets/home-data.js?v=3ace7312"></script>
+<script src="assets/home-data.js?v=895011c7"></script>
 <script>(function(){var d=document.querySelector('.bk-deck');if(!d)return;var cards=[].slice.call(d.querySelectorAll('.bk-card')),chip=d.querySelector('.bk-chip'),word=document.querySelector('.bk-word');
 var words={'Invoice':'invoice','Receipt':'receipt','Letterhead':'letterhead','Thank-you card':'thank-you'};
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var vis=false;

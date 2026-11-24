@@ -77,6 +77,23 @@
     var b = document.createElement('button'); b.type = 'button'; b.className = 'dm-like'; b.dataset.like = id; b.innerHTML = HEART + '<span>Like</span>';
     return b;
   }
+  // ---------- share links: demarsivemedia.com/?post=ID ----------
+  var SHARE = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 3v13"/><path d="M7 8l5-5 5 5"/></svg>';
+  function postLink(id) { return location.origin + '/?post=' + id; }
+  function shareBtn(id, title) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'dm-share'; b.dataset.share = id; b.dataset.title = title || '';
+    b.innerHTML = SHARE + '<span>Share</span>'; b.setAttribute('aria-label', 'Share this post'); return b;
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.dm-share'); if (!b) return;
+    var url = postLink(b.dataset.share), lab = b.querySelector('span');
+    DM.track && DM.track('share');
+    if (navigator.share) { navigator.share({ title: b.dataset.title, url: url }).catch(function () {}); return; }
+    var done = function () { lab.textContent = 'Link copied'; setTimeout(function () { lab.textContent = 'Share'; }, 2200); };
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt('Copy this link', url); });
+    else prompt('Copy this link', url);
+  });
+
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('.dm-like'); if (!b || b.disabled) return;
     var id = b.dataset.like; b.disabled = true;
@@ -89,7 +106,8 @@
   // ---------- comments (shown under an open article) ----------
   window.DMPostExtras = function (post, holder) {
     holder.innerHTML = '';
-    var top = document.createElement('div'); top.className = 'dm-likerow'; top.appendChild(likeBtn(post.id)); holder.appendChild(top);
+    var top = document.createElement('div'); top.className = 'dm-likerow'; top.appendChild(likeBtn(post.id)); top.appendChild(shareBtn(post.id, post.title)); holder.appendChild(top);
+    try { history.replaceState(null, '', '/?post=' + post.id); } catch (e) {}
     var h = document.createElement('h3'); h.textContent = 'Comments'; holder.appendChild(h);
     var list = document.createElement('div'); list.className = 'dm-comments'; list.textContent = 'Loading…'; holder.appendChild(list);
     DM.table('comments', 'select=name,body,created_at&post_id=eq.' + Number(post.id) + '&approved=is.true&order=created_at').then(function (rows) {
@@ -161,11 +179,18 @@
       else if (r.link_url && /^https?:\/\//.test(r.link_url)) { act = document.createElement('a'); act.href = r.link_url; act.target = '_blank'; act.rel = 'noopener'; act.style.cssText = sLink; act.textContent = (r.link_label || 'Open link') + ' ›'; }
       else { act = document.createElement('span'); act.style.cssText = sNote; act.textContent = r.note || ''; }
       box.replaceChild(act, box.lastElementChild);
-      var row = document.createElement('div'); row.className = 'dm-likerow'; row.appendChild(likeBtn(r.id)); box.appendChild(row);
+      a.id = 'post-card-' + r.id;
+      var row = document.createElement('div'); row.className = 'dm-likerow'; row.appendChild(likeBtn(r.id)); row.appendChild(shareBtn(r.id, r.title)); box.appendChild(row);
       return a;
     });
     arts.forEach(function (a) { a.remove(); });
     out.forEach(function (a) { list.appendChild(a); });
+    var want = new URLSearchParams(location.search).get('post');
+    if (want) setTimeout(function () {
+      var opener = blog.querySelector('button[data-post="' + want + '"]'), card = document.getElementById('post-card-' + want);
+      if (opener) opener.click();
+      else if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.classList.add('dm-flash'); setTimeout(function () { card.classList.remove('dm-flash'); }, 2600); }
+    }, 300);
     DM.rpc('post_like_counts').then(function (cs) { cs.forEach(function (c) { likeCounts[c.post_id] = c.n; }); paintLikes(); }).catch(function () {});
   }).catch(function () {});
 })();
