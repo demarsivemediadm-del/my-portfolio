@@ -110,26 +110,66 @@
     try { history.replaceState(null, '', '/?post=' + post.id); } catch (e) {}
     var h = document.createElement('h3'); h.textContent = 'Comments'; holder.appendChild(h);
     var list = document.createElement('div'); list.className = 'dm-comments'; list.textContent = 'Loading…'; holder.appendChild(list);
-    DM.table('comments', 'select=name,body,created_at&post_id=eq.' + Number(post.id) + '&approved=is.true&order=created_at').then(function (rows) {
-      list.textContent = rows.length ? '' : 'No comments yet. Be the first.';
-      rows.forEach(function (c) {
-        var d = document.createElement('div'); d.className = 'dm-comment';
-        var n = document.createElement('strong'); n.textContent = c.name;
-        var t = document.createElement('span'); t.textContent = new Date(c.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-        var p = document.createElement('p'); p.textContent = c.body;
-        d.appendChild(n); d.appendChild(t); d.appendChild(p); list.appendChild(d);
-      });
-    }).catch(function () { list.textContent = 'Comments could not be loaded.'; });
+    function loadC() {
+      return DM.table('comments', 'select=name,body,created_at&post_id=eq.' + Number(post.id) + '&approved=is.true&order=created_at').then(function (rows) {
+        list.textContent = rows.length ? '' : 'No comments yet. Be the first.';
+        rows.forEach(function (c) {
+          var d = document.createElement('div'); d.className = 'dm-comment';
+          var n = document.createElement('strong'); n.textContent = c.name;
+          var t = document.createElement('span'); t.textContent = new Date(c.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+          var p = document.createElement('p'); p.textContent = c.body;
+          d.appendChild(n); d.appendChild(t); d.appendChild(p); list.appendChild(d);
+        });
+      }).catch(function () { list.textContent = 'Comments could not be loaded.'; });
+    }
+    loadC();
     var f = document.createElement('form'); f.className = 'dm-form';
     f.innerHTML = '<label>Your name<input name="name" maxlength="60" required autocomplete="name"></label><label>Your comment<textarea name="body" maxlength="1000" required rows="3"></textarea></label><input name="website" class="dm-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Post comment</button><p role="status"></p>';
     f.addEventListener('submit', function (e) {
       e.preventDefault(); var btn = f.querySelector('button'), msg = f.querySelector('[role=status]'); btn.disabled = true; msg.textContent = '';
-      DM.rpc('add_comment', { p_post: Number(post.id), p_name: f.name.value, p_body: f.body.value, p_hp: f.website.value }).then(function () {
-        f.reset(); msg.textContent = 'Thank you. Your comment will appear once it has been approved.';
+      DM.rpc('add_comment', { p_post: Number(post.id), p_name: f.name.value, p_body: f.body.value, p_hp: f.website.value }).then(function (live) {
+        f.reset();
+        if (live === false) msg.textContent = 'Thank you. Your comment will appear once it has been checked.';
+        else { msg.textContent = 'Thank you. Your comment is up.'; loadC(); }
       }).catch(function (err) { msg.textContent = err.message; }).then(function () { btn.disabled = false; });
     });
-    holder.appendChild(f); paintLikes();
+    holder.appendChild(f);
+    // more from the blog, and a way back into the rest of the site
+    var others = (window.DMPostList || []).filter(function (r) { return String(r.id) !== String(post.id); }).slice(0, 4);
+    var more = document.createElement('div'); more.className = 'dm-more';
+    if (others.length) {
+      var mh = document.createElement('h3'); mh.textContent = 'More from the blog'; more.appendChild(mh);
+      var grid = document.createElement('div'); grid.className = 'dm-more-grid';
+      others.forEach(function (r) {
+        var c = document.createElement('button'); c.type = 'button'; c.className = 'dm-more-card'; c.dataset.goto = r.id;
+        var im = document.createElement('img'); im.src = r.cover_url; im.alt = ''; im.loading = 'lazy';
+        var m = document.createElement('span'); m.textContent = r.meta || '';
+        var t = document.createElement('strong'); t.textContent = r.title;
+        c.appendChild(im); c.appendChild(m); c.appendChild(t); grid.appendChild(c);
+      });
+      more.appendChild(grid);
+    }
+    var nav = document.createElement('div'); nav.className = 'dm-more-nav';
+    nav.innerHTML = '<button type="button" data-goto="blog">See all blog posts</button><button type="button" data-goto="top">Explore Demarsive Media</button>';
+    more.appendChild(nav);
+    holder.appendChild(more);
+    paintLikes();
   };
+
+  function gotoPost(id) {
+    var close = document.querySelector('#dm-modal [data-close]'), blog = document.getElementById('blog');
+    var opener = blog && blog.querySelector('button[data-post="' + id + '"]'), card = document.getElementById('post-card-' + id);
+    if (opener) { opener.click(); return; }
+    if (close) close.click();
+    if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.classList.add('dm-flash'); setTimeout(function () { card.classList.remove('dm-flash'); }, 2600); }
+  }
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest && e.target.closest('#dm-modal [data-goto]'); if (!g) return;
+    var to = g.dataset.goto, close = document.querySelector('#dm-modal [data-close]');
+    if (to === 'blog') { close.click(); document.getElementById('blog').scrollIntoView({ behavior: 'smooth' }); }
+    else if (to === 'top') { close.click(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    else gotoPost(to);
+  });
 
   // ---------- leave a review ----------
   var revSec2 = document.getElementById('reviews');
@@ -167,7 +207,7 @@
     var list = arts[0].parentElement, tplBig = arts[0], tpl = arts[1];
     var btn = blog.querySelector('button[data-post]'), link = blog.querySelector('article a[target]'), note = blog.querySelector('article > div > span');
     var sBtn = btn ? btn.style.cssText : '', sLink = link ? link.style.cssText : sBtn, sNote = note ? note.style.cssText : sBtn;
-    window.DMPosts = {};
+    window.DMPosts = {}; window.DMPostList = rows;
     var out = rows.map(function (r, i) {
       var a = (i === 0 ? tplBig : tpl).cloneNode(true);
       a.dataset.cat = r.category; a.style.display = '';
@@ -186,6 +226,7 @@
     arts.forEach(function (a) { a.remove(); });
     out.forEach(function (a) { list.appendChild(a); });
     var want = new URLSearchParams(location.search).get('post');
+    if (want) { try { history.scrollRestoration = 'manual'; } catch (e) {} blog.scrollIntoView(); }
     if (want) setTimeout(function () {
       var opener = blog.querySelector('button[data-post="' + want + '"]'), card = document.getElementById('post-card-' + want);
       if (opener) opener.click();

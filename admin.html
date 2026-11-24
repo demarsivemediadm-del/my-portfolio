@@ -165,7 +165,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <section id="t-comments" hidden>
       <div class="card stack">
         <h2>Blog comments</h2>
-        <p class="muted">New comments wait here. Nothing shows on the site until you approve it.</p>
+        <p class="muted">New comments show on the site straight away. Any with rude words or links are held here until you approve them. Use Hide or Delete to take one down.</p>
         <div id="c-list"></div>
       </div>
     </section>
@@ -472,11 +472,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var rows = check(r), list = $('c-list'); list.innerHTML = '';
       if (!rows.length) list.appendChild(el('p', { class: 'muted', text: 'No comments yet.' }));
       rows.forEach(function (c) {
-        var ok = el('button', { type: 'button', class: c.approved ? '' : 'primary', text: c.approved ? 'Hide again' : 'Approve' });
+        var ok = el('button', { type: 'button', class: c.approved ? '' : 'primary', text: c.approved ? 'Hide' : 'Approve' });
         ok.addEventListener('click', function () { ok.disabled = true; sb.from('comments').update({ approved: !c.approved }).eq('id', c.id).then(function (x) { check(x); toast(c.approved ? 'Hidden' : 'Approved. It is on the site now.'); return loadComments(); }).catch(fail); });
         var del = delBtn(function () { return sb.from('comments').delete().eq('id', c.id).then(function (x) { check(x); toast('Deleted'); return loadComments(); }); });
         list.appendChild(el('div', { class: 'item' }, [el('div', { class: 'body' }, [
-          el('p', { class: 'muted', text: (c.approved ? 'Showing' : 'Waiting for approval') + ' · on "' + ((c.posts && c.posts.title) || 'a post') + '" · ' + new Date(c.created_at).toLocaleString() }),
+          el('p', { class: 'muted', text: (c.approved ? 'Showing on the site' : 'Held: check before it shows') + ' · on "' + ((c.posts && c.posts.title) || 'a post') + '" · ' + new Date(c.created_at).toLocaleString() }),
           el('h3', { text: c.name }), el('p', { text: c.body, style: 'white-space:pre-wrap;overflow-wrap:anywhere' }),
           el('div', { class: 'btns' }, [ok, del])
         ])]));
